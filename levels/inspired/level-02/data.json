@@ -1,0 +1,308 @@
+{
+  "version": 1,
+  "id": "level-02",
+  "book": "inspired",
+  "title": "需求单排雷",
+  "teaches": "上线前排四颗雷：要不要、会不会用、做不做得出、划不划算",
+  "duration": "3 分钟",
+  "intro": {
+    "title": "需求单排雷",
+    "body": "运营同事丢来一张需求单，说「很简单，下周上」。里面埋了雷，找出来，并说清是哪一种。",
+    "button": "开始排雷"
+  },
+  "tapHint": "先点可疑的句子，再选雷的种类",
+  "risks": [
+    {
+      "id": "value",
+      "label": "没人要",
+      "name": "价值风险",
+      "correct": "对，这是拍脑袋。没问过用户，就是在赌。"
+    },
+    {
+      "id": "usability",
+      "label": "不会用",
+      "name": "易用风险",
+      "correct": "对，用户卡在这一步就走了。"
+    },
+    {
+      "id": "feasibility",
+      "label": "做不出",
+      "name": "可行风险",
+      "correct": "对，先问工程师，别替他们答应。"
+    },
+    {
+      "id": "viability",
+      "label": "不划算",
+      "name": "商业风险",
+      "correct": "对，用户喜欢，公司却亏，也不行。"
+    }
+  ],
+  "judge": {
+    "wrongType": "是雷，但属于「×」这一类，看句尾图标。",
+    "falseAlarm": "这句没问题，别把正常需求当雷。",
+    "showSeconds": 1.5
+  },
+  "sheets": [
+    {
+      "id": "A",
+      "timeLimit": 0,
+      "variants": [
+        {
+          "id": "A1",
+          "title": "生鲜应用：全家一起买菜",
+          "lines": [
+            {
+              "id": "a1-1",
+              "text": "全家共用一个购物车",
+              "risk": null
+            },
+            {
+              "id": "a1-2",
+              "text": "下单前要连跳五个页面",
+              "risk": "usability"
+            },
+            {
+              "id": "a1-3",
+              "text": "年轻人肯定爱跟爸妈买",
+              "risk": "value"
+            },
+            {
+              "id": "a1-4",
+              "text": "下周上线，全家秒同步",
+              "risk": "feasibility"
+            }
+          ]
+        },
+        {
+          "id": "A2",
+          "title": "外卖应用：办公室拼单",
+          "lines": [
+            {
+              "id": "a2-1",
+              "text": "同事扫码就能加菜",
+              "risk": null
+            },
+            {
+              "id": "a2-2",
+              "text": "拼单前先填工号部门",
+              "risk": "usability"
+            },
+            {
+              "id": "a2-3",
+              "text": "白领肯定天天拼单",
+              "risk": "value"
+            },
+            {
+              "id": "a2-4",
+              "text": "下周接入所有公司门禁",
+              "risk": "feasibility"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "timeLimit": 60,
+      "variants": [
+        {
+          "id": "B1",
+          "title": "健身应用：免费私教直播",
+          "lines": [
+            {
+              "id": "b1-1",
+              "text": "每天 20 场，全部免费",
+              "risk": "viability"
+            },
+            {
+              "id": "b1-2",
+              "text": "入口放设置页第四层",
+              "risk": "usability"
+            },
+            {
+              "id": "b1-3",
+              "text": "用户肯定都想上直播",
+              "risk": "value"
+            },
+            {
+              "id": "b1-4",
+              "text": "下课后可以看回放",
+              "risk": null
+            },
+            {
+              "id": "b1-5",
+              "text": "开课前推送提醒",
+              "risk": null
+            }
+          ]
+        },
+        {
+          "id": "B2",
+          "title": "读书应用：全场免费听书",
+          "lines": [
+            {
+              "id": "b2-1",
+              "text": "所有书都免费听",
+              "risk": "viability",
+              "note": "版权要花钱，全免费谁来付？"
+            },
+            {
+              "id": "b2-2",
+              "text": "播放键藏进「更多」里",
+              "risk": "usability"
+            },
+            {
+              "id": "b2-3",
+              "text": "大家肯定爱边跑边听",
+              "risk": "value"
+            },
+            {
+              "id": "b2-4",
+              "text": "可以调快慢速",
+              "risk": null
+            },
+            {
+              "id": "b2-5",
+              "text": "支持定时关闭",
+              "risk": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "timeLimit": 60,
+      "variants": [
+        {
+          "id": "C1",
+          "title": "报销系统：AI 自动审批",
+          "lines": [
+            {
+              "id": "c1-1",
+              "text": "员工拍照上传发票",
+              "risk": null
+            },
+            {
+              "id": "c1-2",
+              "text": "大家肯定嫌审批慢",
+              "risk": "value"
+            },
+            {
+              "id": "c1-3",
+              "text": "提交要填 18 个字段",
+              "risk": "usability"
+            },
+            {
+              "id": "c1-4",
+              "text": "下周认全所有手写票",
+              "risk": "feasibility"
+            },
+            {
+              "id": "c1-5",
+              "text": "AI 判真伪，错了不追责",
+              "risk": "viability",
+              "note": "出了错公司担责，也是亏。"
+            }
+          ]
+        },
+        {
+          "id": "C2",
+          "title": "门店系统：AI 自动排班",
+          "lines": [
+            {
+              "id": "c2-1",
+              "text": "店长手机上看班表",
+              "risk": null
+            },
+            {
+              "id": "c2-2",
+              "text": "店员肯定想自己选班",
+              "risk": "value"
+            },
+            {
+              "id": "c2-3",
+              "text": "换班要三个人签字",
+              "risk": "usability"
+            },
+            {
+              "id": "c2-4",
+              "text": "下周接入全国打卡机",
+              "risk": "feasibility"
+            },
+            {
+              "id": "c2-5",
+              "text": "连排夜班不算加班费",
+              "risk": "viability",
+              "note": "违规要罚款，公司更亏。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "timerHint": "接下来每张 60 秒",
+  "sheetDone": "这张排掉 × / × 颗雷",
+  "timeUp": "还剩 × 颗雷没排，上线那天会炸给你看。",
+  "missedLabel": "漏掉：×",
+  "replay": {
+    "variantRule": "alternate",
+    "shuffleLines": true
+  },
+  "scoring": {
+    "hit": 2,
+    "wrongType": 1,
+    "falseAlarm": -1,
+    "floor": 0,
+    "max": 20,
+    "passAt": 7
+  },
+  "stars": {
+    "by": "total",
+    "max": 3,
+    "thresholds": {
+      "3": 16,
+      "2": 10,
+      "1": 7
+    },
+    "rules": {
+      "3": "三张单子合计 16 分以上",
+      "2": "10 到 15 分",
+      "1": "7 到 9 分；低于 7 分没过",
+      "scoreFrom": "三张单子分数相加，满分 20 分；每张不低于 0 分"
+    },
+    "feedback": {
+      "3": "四类雷你都认得，这张单子可以放心交给开发了。",
+      "2": "大部分雷排掉了。漏掉的那类，下次写单子时多看一眼。",
+      "1": "雷还留了不少。别急，四类雷各认一遍就熟了。"
+    }
+  },
+  "fail": {
+    "body": "雷太多没排掉，再来一次？",
+    "autoUnlockAfter": 3,
+    "autoUnlockBody": "先往下走，回头再来拿星"
+  },
+  "learned": {
+    "summary": "上线前排四颗雷：要不要、会不会用、做不做得出、划不划算。",
+    "tomorrow": "明天：在需求单最后加四行，一行回答一颗雷。",
+    "disclaimer": "数据为游戏模拟"
+  },
+  "buttons": {
+    "start": "开始排雷",
+    "next": "下一张",
+    "retry": "再来一次",
+    "backToMap": "回地图",
+    "replay": "重玩拿星"
+  },
+  "ui": {
+    "paused": "暂停",
+    "zeroDelta": "+0",
+    "unlocked": "已解锁",
+    "comeBack": "回来拿星",
+    "resumePrompt": "上次做到第 × 张单子，接着做吗？",
+    "resumeContinue": "接着做",
+    "resumeRestart": "从头开始",
+    "learnedCollapsed": "这关学到了：上线前排四颗雷",
+    "noteShowMs": 3000
+  }
+}

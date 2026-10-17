@@ -8,7 +8,7 @@
       "subtitle": "忙了两周没人用？先找对，再做对。",
       "levels": [
         { "id": "level-01", "title": "两周冲刺" },
-        { "id": "level-02", "title": "需求单排雷", "status": "wip" },
+        { "id": "level-02", "title": "需求单排雷" },
         { "id": "level-03", "title": "原型抢测", "status": "wip" },
         { "id": "level-04", "title": "老板的需求清单", "status": "wip" },
         { "id": "level-05", "title": "指标拔河", "status": "wip" },

@@ -93,6 +93,100 @@ export function clearResume(b, l){
   saveProgress(p);
 }
 
+// 连续没过、自动解锁、续玩快照。键都以 pm10: 开头，清除本机进度时一并删掉。
+export const L12_FAILS_KEY = 'pm10:l12-fails:v1';
+export const L12_RUN_KEY = 'pm10:l12-run:v1';
+
+function readJsonMap(key){
+  try{
+    const raw = store ? store.getItem(key) : mem[key];
+    const data = raw ? JSON.parse(raw) : {};
+    return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+  }catch{ return {}; }
+}
+
+function writeJsonMap(key, data){
+  const s = JSON.stringify(data);
+  try{ store ? store.setItem(key, s) : (mem[key] = s); }catch{ mem[key] = s; }
+}
+
+export function readFailStreak(b, l){
+  const n = Number(readJsonMap(L12_FAILS_KEY)[levelKey(b, l)]);
+  if(!Number.isFinite(n) || n <= 0) return 0;
+  return Math.floor(n);
+}
+
+export function bumpFailStreak(b, l){
+  const map = readJsonMap(L12_FAILS_KEY);
+  const key = levelKey(b, l);
+  const n = readFailStreak(b, l) + 1;
+  map[key] = n;
+  writeJsonMap(L12_FAILS_KEY, map);
+  return n;
+}
+
+export function clearFailStreak(b, l){
+  const map = readJsonMap(L12_FAILS_KEY);
+  const key = levelKey(b, l);
+  if(map[key] == null) return;
+  delete map[key];
+  writeJsonMap(L12_FAILS_KEY, map);
+}
+
+export function readLevelRun(b, l){
+  const rec = readJsonMap(L12_RUN_KEY)[levelKey(b, l)];
+  return rec && typeof rec === 'object' ? rec : null;
+}
+
+export function writeLevelRun(b, l, run){
+  const map = readJsonMap(L12_RUN_KEY);
+  map[levelKey(b, l)] = run;
+  writeJsonMap(L12_RUN_KEY, map);
+}
+
+export function clearLevelRun(b, l){
+  const map = readJsonMap(L12_RUN_KEY);
+  const key = levelKey(b, l);
+  if(map[key] == null) return;
+  delete map[key];
+  writeJsonMap(L12_RUN_KEY, map);
+}
+
+// 连续没过达到上限：不写 done，不当作通关。已通关的记录原样返回。已有星只升不降。
+// 没过关也记下这一次的分数和星。星只升不降。不写 done。
+export function rememberScore(b, l, stars, score){
+  const p = loadProgress();
+  const key = levelKey(b, l);
+  const prev = p.levels[key] || {};
+  const next = {
+    ...prev,
+    stars: bestStars(prev, stars),
+    lastScore: Number(score)
+  };
+  if(!prev.done) delete next.done;
+  p.levels[key] = next;
+  saveProgress(p);
+  return next;
+}
+
+export function markAutoUnlocked(b, l){
+  const p = loadProgress();
+  const key = levelKey(b, l);
+  const prev = p.levels[key] || {};
+  if(prev.done) return prev;
+  const stars = prev.stars != null && prev.stars !== '' ? clampStars(prev.stars) : 0;
+  const next = { ...prev, autoUnlocked: true, stars };
+  if(!prev.done) delete next.done;
+  p.levels[key] = next;
+  saveProgress(p);
+  return next;
+}
+
+export function isClearedOrUnlocked(p, b, l){
+  const rec = p && p.levels ? p.levels[levelKey(b, l)] : null;
+  return !!(rec && (rec.done || rec.autoUnlocked));
+}
+
 export const SETTINGS_KEY = 'pm10:settings:v1';
 
 export function vibrateEnabled(){

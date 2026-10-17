@@ -1,5 +1,6 @@
 import { loadRegistry, loadLevel } from './loader.js';
-import { loadProgress, completeLevel, isDone, storageAvailable, levelKey, vibrateEnabled, setVibrate, clearAllPm10 } from './storage.js';
+import { loadProgress, completeLevel, isDone, storageAvailable, levelKey, vibrateEnabled, setVibrate, clearAllPm10, isClearedOrUnlocked } from './storage.js';
+import { uiText } from './ui-text.js';
 
 const app = document.getElementById('app');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -63,20 +64,24 @@ function bookNo(index) {
   return String(index + 1).padStart(2, '0');
 }
 
-// 未解锁优先于施工中：上一关没过提示「先通过上一关」；上一关已过、本关仍是 wip 才提示「还在盖，敬请期待」。
+const MAP_UI = uiText(null);
+
+// 未解锁优先于施工中。上一关已通关或已解锁（autoUnlocked）才开下一关；本关仍是 wip 才提示「还在盖，敬请期待」。
 function isUnlocked(books, book, index, p) {
-  if (index > 0) return isDone(p, book.id, book.levels[index - 1].id);
+  if (index > 0) return isClearedOrUnlocked(p, book.id, book.levels[index - 1].id);
   const bi = books.findIndex(b => b.id === book.id);
   if (bi <= 0) return true;
   const prev = books[bi - 1];
   const last = prev.levels[prev.levels.length - 1];
-  return !!last && isDone(p, prev.id, last.id);
+  return !!last && isClearedOrUnlocked(p, prev.id, last.id);
 }
 
 function nodeState(books, book, level, index, p) {
   if (!isUnlocked(books, book, index, p)) return 'locked';
   if (level.status === 'wip') return 'wip';
   if (isDone(p, book.id, level.id)) return 'cleared';
+  const rec = p.levels[levelKey(book.id, level.id)];
+  if (rec && rec.autoUnlocked) return 'unlocked';
   return 'open';
 }
 
@@ -92,30 +97,42 @@ function starCount(rec) {
   return Math.max(0, Math.min(3, Number(rec.stars) || 0));
 }
 
-function starText(p, bookId, levelId) {
-  const n = starCount(p.levels[levelKey(bookId, levelId)]);
-  if (n == null) return '';
-  let s = '';
-  for (let i = 1; i <= 3; i++) s += i <= n ? '★' : '☆';
-  return s;
+const STAR_ON = './assets/ui/ui-star-on.svg';
+const STAR_OFF = './assets/ui/ui-star-off.svg';
+
+function starIcons(onCount) {
+  const n = Math.max(0, Math.min(3, Number(onCount) || 0));
+  let html = '';
+  for (let i = 1; i <= 3; i++) {
+    html += `<img src="${i <= n ? STAR_ON : STAR_OFF}" alt="" width="14" height="14" draggable="false">`;
+  }
+  return html;
 }
 
 function renderNode(books, book, level, index, bi, p, mark) {
   const state = nodeState(books, book, level, index, p);
   const no = bookNo(bi);
-  const current = state === 'open' && mark.open === 0 ? (mark.open = 1) : 0;
+  const current = (state === 'open' || state === 'unlocked') && mark.open === 0 ? (mark.open = 1) : 0;
   const num = state === 'locked' ? '' : `<span class="node-num">${index + 1}</span>`;
-  const flag = state === 'wip' ? '<span class="wip-flag">施工中</span>' : '';
-  const stars = state === 'cleared' ? starText(p, book.id, level.id) : '';
-  const stateName = { locked: '未解锁', wip: '施工中', open: '可进入', cleared: '已通关' }[state];
+  const flag = state === 'wip'
+    ? '<span class="wip-flag">施工中</span>'
+    : (state === 'unlocked' ? `<span class="unlock-flag">${esc(MAP_UI.unlocked)}</span>` : '');
+  const nStars = starCount(p.levels[levelKey(book.id, level.id)]);
+  const stars = state === 'cleared' && nStars != null
+    ? `<span class="node-stars" aria-hidden="true">${starIcons(nStars)}</span>`
+    : (state === 'unlocked' ? `<span class="node-stars" data-testid="empty-stars" aria-hidden="true">${starIcons(0)}</span>` : '');
+  const comeBack = state === 'unlocked' ? `<span class="node-back" data-testid="come-back">${esc(MAP_UI.comeBack)}</span>` : '';
+  const stateName = { locked: '未解锁', wip: '施工中', open: '可进入', cleared: '已通关', unlocked: MAP_UI.unlocked }[state];
+  const starLabel = state === 'cleared' && nStars != null ? `，3 颗星中得 ${nStars} 颗` : '';
   const lockKind = isUnlocked(books, book, 0, p) ? 'level' : 'book';
-  return `<button type="button" class="node${current ? ' is-current' : ''}${state === 'wip' ? ' is-wip' : ''}" data-node data-state="${state}" data-lock="${lockKind}" data-book="${esc(book.id)}" data-level="${esc(level.id)}" aria-label="${esc(level.title)}，${stateName}">
+  return `<button type="button" class="node${current ? ' is-current' : ''}${state === 'wip' ? ' is-wip' : ''}" data-node data-state="${state}" data-lock="${lockKind}" data-book="${esc(book.id)}" data-level="${esc(level.id)}" aria-label="${esc(level.title)}，${stateName}${starLabel}">
     <span class="node-face">
       <img src="${nodeSrc(state, no)}" alt="" width="72" height="72">
       ${num}${flag}
     </span>
     <span class="node-label">${esc(level.title)}</span>
-    ${stars ? `<span class="node-stars" aria-hidden="true">${stars}</span>` : ''}
+    ${stars}
+    ${comeBack}
   </button>`;
 }
 
@@ -245,6 +262,9 @@ function about(gen) {
         <li>localStorage 的 pm10:l11-hint:v1：看过点卡片的提示</li>
         <li>localStorage 的 pm10:settings:v1：出星时震不震，默认开</li>
         <li>sessionStorage 里以 pm10:l11-run: 开头的键：这一局的牌序，关掉页面就没了</li>
+        <li>localStorage 的 pm10:l12-fails:v1：第 2 关连续没过的次数，按书和关卡分开记，过关就清掉</li>
+        <li>localStorage 的 pm10:l12-run:v1：第 2 关这一局做到哪张单子、哪个版本、句子顺序和前面几张的分数</li>
+        <li>pm10:progress:v1 里的 autoUnlocked：连续没过达到次数后先解锁下一关，本关还没通关</li>
       </ul>
       <button type="button" class="btn" data-testid="clear-progress">清除本机进度</button>
       <div data-testid="clear-confirm" hidden>
