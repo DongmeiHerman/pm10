@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "id": "level-01",
+  "book": "inspired",
+  "title": "两周冲刺",
+  "teaches": "先找对，再做对：探索和交付是两件事",
+  "duration": "4 分钟",
+  "intro": {
+    "title": "两周冲刺",
+    "body": "你接手了一个外卖小程序。老板说：「用户老抱怨，你看着办。」团队有 10 个人天，两周后看订单涨没涨。",
+    "button": "开始排期"
+  },
+  "slots": 10,
+  "grid": {
+    "rows": 2,
+    "columns": 5
+  },
+  "scheduleHint": "点卡片放进日程",
+  "cannotFit": "放不下",
+  "partialConfirm": "还有 × 天没排，就这样吗？",
+  "cards": [
+    {
+      "id": "interview",
+      "text": "访谈 5 个用户",
+      "days": 1,
+      "type": "verify",
+      "feedback": "用户的烦心事，都记下来了。"
+    },
+    {
+      "id": "paper",
+      "text": "画纸面原型给用户看",
+      "days": 1,
+      "type": "verify",
+      "feedback": "用户看懂了，还挑出了毛病。"
+    },
+    {
+      "id": "metrics",
+      "text": "看后台数据",
+      "days": 1,
+      "type": "verify",
+      "feedback": "看出哪里掉单，看不出为什么。"
+    },
+    {
+      "id": "points",
+      "text": "开发「会员积分」",
+      "days": 4,
+      "type": "build",
+      "feedback": "积分？我根本不看。"
+    },
+    {
+      "id": "reserve",
+      "text": "开发「预约送达」",
+      "days": 4,
+      "type": "build",
+      "feedback": "最烦等半天不知道几点到。"
+    },
+    {
+      "id": "bundle",
+      "text": "开发「凑单提醒」",
+      "days": 3,
+      "type": "build",
+      "feedback": "凑满减？算了，我就点一份。"
+    }
+  ],
+  "firstRunTrueProblem": "reserve",
+  "replay": {
+    "shuffleCards": true,
+    "trueProblemFrom": "build"
+  },
+  "stars": {
+    "by": "round2",
+    "max": 3,
+    "luckLine": "这次是运气",
+    "rules": {
+      "3": "先放至少 1 张验证卡，再放真问题卡（首局真问题是「预约送达」）",
+      "2": "没验证但盲选中真问题卡。结算屏加一行「这次是运气」，不单独弹窗",
+      "1": "没选中真问题卡",
+      "scoreFrom": "以第二轮为准，第一轮只用来对比"
+    },
+    "feedback": {
+      "3": "你先花 2 天搞清楚用户在烦什么，剩下 8 天全打在点上。这就是先找对，再做对。",
+      "2": "订单涨了，但你没问过任何人。下次换个需求，运气未必还在。",
+      "1": "团队忙了两周，做出来的东西没人用。不是做得不好，是一开始就选错了。"
+    },
+    "curve": {
+      "3": "明显上涨",
+      "2": "小涨",
+      "1": "没变化"
+    }
+  },
+  "transition": {
+    "body": "想再来一次吗？这次你可以先去问问用户。",
+    "button": "再来一轮"
+  },
+  "compare": {
+    "title": "同样 10 天，差别在哪",
+    "round1Label": "第一轮",
+    "round2Label": "第二轮",
+    "note": "数据为游戏模拟"
+  },
+  "learned": {
+    "summary": "先找对，再做对。花 2 天问用户，比盲做 10 天值钱。",
+    "tomorrow": "明天：接到需求先别排期，花半天找 3 个用户聊聊。",
+    "disclaimer": "数据为游戏模拟"
+  },
+  "buttons": {
+    "start": "开始排期",
+    "commit": "就这样",
+    "remove": "移出",
+    "backToMap": "回地图",
+    "replay": "重玩拿星",
+    "partialYes": "就这样",
+    "partialNo": "再排排"
+  }
+}

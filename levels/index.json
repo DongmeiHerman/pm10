@@ -1,0 +1,133 @@
+{
+  "version": 2,
+  "books": [
+    {
+      "id": "inspired",
+      "title": "启示录",
+      "color": "#4C5FD5",
+      "subtitle": "忙了两周没人用？先找对，再做对。",
+      "levels": [
+        { "id": "level-01", "title": "两周冲刺" },
+        { "id": "level-02", "title": "需求单排雷", "status": "wip" },
+        { "id": "level-03", "title": "原型抢测", "status": "wip" },
+        { "id": "level-04", "title": "老板的需求清单", "status": "wip" },
+        { "id": "level-05", "title": "指标拔河", "status": "wip" },
+        { "id": "level-06", "title": "产品经理的四块拼图", "status": "wip" }
+      ]
+    },
+    {
+      "id": "yu-jun",
+      "title": "俞军产品方法论",
+      "color": "#7A5AF8",
+      "subtitle": "用户说的和做的，为什么总不一样？",
+      "levels": [
+        { "id": "level-01", "title": "第 1 关", "status": "wip" },
+        { "id": "level-02", "title": "第 2 关", "status": "wip" },
+        { "id": "level-03", "title": "第 3 关", "status": "wip" },
+        { "id": "level-04", "title": "第 4 关", "status": "wip" },
+        { "id": "level-05", "title": "第 5 关", "status": "wip" }
+      ]
+    },
+    {
+      "id": "everyone-pm",
+      "title": "人人都是产品经理",
+      "color": "#2BA6DE",
+      "subtitle": "需求从哪来，又该往哪去？",
+      "levels": [
+        { "id": "level-01", "title": "第 1 关", "status": "wip" },
+        { "id": "level-02", "title": "第 2 关", "status": "wip" },
+        { "id": "level-03", "title": "第 3 关", "status": "wip" },
+        { "id": "level-04", "title": "第 4 关", "status": "wip" },
+        { "id": "level-05", "title": "第 5 关", "status": "wip" }
+      ]
+    },
+    {
+      "id": "the-lean-startup",
+      "title": "精益创业",
+      "color": "#14B8A6",
+      "subtitle": "别等完美，先做出来试试。",
+      "levels": [
+        { "id": "level-01", "title": "第 1 关", "status": "wip" },
+        { "id": "level-02", "title": "第 2 关", "status": "wip" },
+        { "id": "level-03", "title": "第 3 关", "status": "wip" },
+        { "id": "level-04", "title": "第 4 关", "status": "wip" },
+        { "id": "level-05", "title": "第 5 关", "status": "wip" }
+      ]
+    },
+    {
+      "id": "elements-of-ux",
+      "title": "用户体验要素",
+      "color": "#3FAE5A",
+      "subtitle": "好体验是一层层盖出来的。",
+      "levels": [
+        { "id": "level-01", "title": "第 1 关", "status": "wip" },
+        { "id": "level-02", "title": "第 2 关", "status": "wip" },
+        { "id": "level-03", "title": "第 3 关", "status": "wip" },
+        { "id": "level-04", "title": "第 4 关", "status": "wip" },
+        { "id": "level-05", "title": "第 5 关", "status": "wip" }
+      ]
+    },
+    {
+      "id": "design-psychology",
+      "title": "设计心理学",
+      "color": "#E5A100",
+      "subtitle": "推不开的门，错的不是你。",
+      "levels": [
+        { "id": "level-01", "title": "第 1 关", "status": "wip" },
+        { "id": "level-02", "title": "第 2 关", "status": "wip" },
+        { "id": "level-03", "title": "第 3 关", "status": "wip" },
+        { "id": "level-04", "title": "第 4 关", "status": "wip" },
+        { "id": "level-05", "title": "第 5 关", "status": "wip" },
+        { "id": "level-06", "title": "第 6 关", "status": "wip" }
+      ]
+    },
+    {
+      "id": "dont-make-me-think",
+      "title": "点石成金",
+      "color": "#F47B2A",
+      "subtitle": "别让用户想，一秒就该看懂。",
+      "levels": [
+        { "id": "level-01", "title": "第 1 关", "status": "wip" },
+        { "id": "level-02", "title": "第 2 关", "status": "wip" },
+        { "id": "level-03", "title": "第 3 关", "status": "wip" },
+        { "id": "level-04", "title": "第 4 关", "status": "wip" }
+      ]
+    },
+    {
+      "id": "hooked",
+      "title": "上瘾",
+      "color": "#E5484D",
+      "subtitle": "为什么你停不下来刷手机？",
+      "levels": [
+        { "id": "level-01", "title": "第 1 关", "status": "wip" },
+        { "id": "level-02", "title": "第 2 关", "status": "wip" },
+        { "id": "level-03", "title": "第 3 关", "status": "wip" },
+        { "id": "level-04", "title": "第 4 关", "status": "wip" }
+      ]
+    },
+    {
+      "id": "innovators-dilemma",
+      "title": "创新者的窘境",
+      "color": "#D6409F",
+      "subtitle": "大公司为什么会输给小公司？",
+      "levels": [
+        { "id": "level-01", "title": "第 1 关", "status": "wip" },
+        { "id": "level-02", "title": "第 2 关", "status": "wip" },
+        { "id": "level-03", "title": "第 3 关", "status": "wip" },
+        { "id": "level-04", "title": "第 4 关", "status": "wip" }
+      ]
+    },
+    {
+      "id": "crossing-the-chasm",
+      "title": "跨越鸿沟",
+      "color": "#5E6AD2",
+      "subtitle": "尝鲜的人买了，大多数人为什么不买？",
+      "levels": [
+        { "id": "level-01", "title": "第 1 关", "status": "wip" },
+        { "id": "level-02", "title": "第 2 关", "status": "wip" },
+        { "id": "level-03", "title": "第 3 关", "status": "wip" },
+        { "id": "level-04", "title": "第 4 关", "status": "wip" }
+      ]
+    }
+  ]
+}
