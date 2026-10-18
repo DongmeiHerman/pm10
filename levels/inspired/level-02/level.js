@@ -1,5 +1,8 @@
 import { uiText } from '../../../js/ui-text.js';
 import { createCountdown, timerBarHTML } from '../../../js/timer-bar.js';
+import { testHookOn } from '../../../js/test-hook.js';
+
+export { testHookOn };
 import {
   readResume, saveResume, clearResume,
   bumpFailStreak, clearFailStreak,
@@ -65,16 +68,6 @@ function ensureCss() {
   link.rel = 'stylesheet';
   link.href = new URL('./level.css', import.meta.url).href;
   document.head.appendChild(link);
-}
-
-// 自动驾驶钩子只给本机 e2e 用。线上主机名带 l12seq 也必须当没看见。
-export function testHookOn(hostname, search) {
-  const host = String(hostname || '').trim().replace(/^\[|\]$/g, '').toLowerCase();
-  const local = host === 'localhost' || host === '127.0.0.1' || host === '::1';
-  if (!local) return false;
-  const raw = String(search || '');
-  const q = raw.startsWith('?') ? raw.slice(1) : raw;
-  return new URLSearchParams(q).get('l12test') === '1';
 }
 
 function readSeq() {
@@ -721,7 +714,7 @@ export function mount(root, meta, api) {
   function learnedHTML() {
     const open = learnedOpen;
     return `<section class="l12-learned" data-testid="learned-bar">
-      <button type="button" class="l12-learned-btn" data-act="learned" data-testid="learned-toggle" aria-expanded="${open ? 'true' : 'false'}">
+      <button type="button" class="l12-learned-btn" data-act="learned" data-testid="learned-toggle" aria-expanded="${open ? 'true' : 'false'}" aria-label="${esc(ui.learnedCollapsed)}">
         <span data-testid="learned-short"${open ? ' hidden' : ''}>${esc(ui.learnedCollapsed)}</span>
       </button>
       <div class="l12-learned-more" data-testid="learned-more"${open ? '' : ' hidden'}>
@@ -751,7 +744,10 @@ export function mount(root, meta, api) {
     const more = root.querySelector('[data-testid="learned-more"]');
     const btn = root.querySelector('[data-testid="learned-toggle"]');
     const short = root.querySelector('[data-testid="learned-short"]');
-    if (btn) btn.setAttribute('aria-expanded', learnedOpen ? 'true' : 'false');
+    if (btn) {
+      btn.setAttribute('aria-expanded', learnedOpen ? 'true' : 'false');
+      btn.setAttribute('aria-label', ui.learnedCollapsed);
+    }
     if (more) more.hidden = !learnedOpen;
     if (short) short.hidden = learnedOpen;
   }

@@ -1,0 +1,338 @@
+{
+  "version": 1,
+  "id": "level-03",
+  "book": "inspired",
+  "title": "原型抢测",
+  "teaches": "能用纸试的，别用代码试",
+  "duration": "3 分钟",
+  "intro": {
+    "title": "原型抢测",
+    "body": "老板丢来 10 个新想法，问哪个有人要。挑一种原型拿给用户试，越便宜越快越好。",
+    "button": "开始抢测"
+  },
+  "tapHint": "点想法，再选一种原型",
+  "tools": [
+    {
+      "id": "paper",
+      "label": "纸面草图",
+      "name": "纸面草图",
+      "seconds": 1,
+      "right": "一张纸就问出来了，省下两周。"
+    },
+    {
+      "id": "click",
+      "label": "可点假页",
+      "name": "可点的假页面",
+      "seconds": 3,
+      "right": "能点的假页面，正好看出卡在哪。"
+    },
+    {
+      "id": "build",
+      "label": "正式开发",
+      "name": "正式开发",
+      "seconds": 15
+    }
+  ],
+  "needsClickTag": "要看交互",
+  "grade": {
+    "right": "用对了",
+    "costly": "用贵了",
+    "unclear": "看不懂",
+    "build": "太贵了"
+  },
+  "verdict": {
+    "yes": "有人要",
+    "no": "没人要"
+  },
+  "judge": {
+    "costly": "测出来了，但一张纸就够。",
+    "unclear": "草图上看不出怎么点，得做个能点的假页面。",
+    "build": "做了 15 秒才去问用户。现实里，这是一个月。",
+    "showSeconds": 1.5
+  },
+  "rounds": [
+    {
+      "id": "R1",
+      "timeLimit": 0,
+      "spawnEvery": 0,
+      "stayFor": 0,
+      "variants": [
+        {
+          "id": "R1-1",
+          "ideas": [
+            {
+              "id": "r11-1",
+              "text": "宠物寄养预约",
+              "needsClick": false,
+              "real": true
+            },
+            {
+              "id": "r11-2",
+              "text": "左滑划掉待办",
+              "needsClick": true,
+              "real": false
+            }
+          ]
+        },
+        {
+          "id": "R1-2",
+          "ideas": [
+            {
+              "id": "r12-1",
+              "text": "上门修手机",
+              "needsClick": false,
+              "real": false
+            },
+            {
+              "id": "r12-2",
+              "text": "拖拽排课表",
+              "needsClick": true,
+              "real": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R2",
+      "timeLimit": 60,
+      "spawnEvery": 12,
+      "stayFor": 16,
+      "variants": [
+        {
+          "id": "R2-1",
+          "ideas": [
+            {
+              "id": "r21-1",
+              "text": "二手书回收",
+              "needsClick": false,
+              "real": false
+            },
+            {
+              "id": "r21-2",
+              "text": "滑动选电影座",
+              "needsClick": true,
+              "real": true
+            },
+            {
+              "id": "r21-3",
+              "text": "社区拼车",
+              "needsClick": false,
+              "real": true
+            },
+            {
+              "id": "r21-4",
+              "text": "摇一摇找队友",
+              "needsClick": true,
+              "real": false
+            }
+          ]
+        },
+        {
+          "id": "R2-2",
+          "ideas": [
+            {
+              "id": "r22-1",
+              "text": "食堂剩菜打折",
+              "needsClick": false,
+              "real": true
+            },
+            {
+              "id": "r22-2",
+              "text": "长按语音搜菜谱",
+              "needsClick": true,
+              "real": false
+            },
+            {
+              "id": "r22-3",
+              "text": "公司订会议室",
+              "needsClick": false,
+              "real": false
+            },
+            {
+              "id": "r22-4",
+              "text": "双指缩放看户型",
+              "needsClick": true,
+              "real": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R3",
+      "timeLimit": 60,
+      "spawnEvery": 10,
+      "stayFor": 13,
+      "variants": [
+        {
+          "id": "R3-1",
+          "ideas": [
+            {
+              "id": "r31-1",
+              "text": "刷卡片选旅行地",
+              "needsClick": true,
+              "real": false
+            },
+            {
+              "id": "r31-2",
+              "text": "老人代缴话费",
+              "needsClick": false,
+              "real": true
+            },
+            {
+              "id": "r31-3",
+              "text": "拖滑块试口红",
+              "needsClick": true,
+              "real": true
+            },
+            {
+              "id": "r31-4",
+              "text": "宝宝辅食食谱",
+              "needsClick": false,
+              "real": false
+            }
+          ]
+        },
+        {
+          "id": "R3-2",
+          "ideas": [
+            {
+              "id": "r32-1",
+              "text": "小区失物招领",
+              "needsClick": false,
+              "real": true
+            },
+            {
+              "id": "r32-2",
+              "text": "画个圈就记账",
+              "needsClick": true,
+              "real": false
+            },
+            {
+              "id": "r32-3",
+              "text": "宿舍拼团买水果",
+              "needsClick": false,
+              "real": false
+            },
+            {
+              "id": "r32-4",
+              "text": "左右滑挑合租房",
+              "needsClick": true,
+              "real": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "timerHint": "接下来每轮 × 秒",
+  "roundDone": "这轮测出 × / × 个想法",
+  "timeUp": "时间到，还有 × 个想法没测。",
+  "missedLabel": "没测",
+  "calm": {
+    "factor": 1.5,
+    "scaleTools": false
+  },
+  "fallback": {
+    "warmupMs": 500,
+    "probeMs": 3000,
+    "minFps": 24,
+    "longFrameMs": 100,
+    "maxLongFrames": 3,
+    "guardWindowMs": 3000,
+    "guardLongFrames": 5,
+    "bobPx": 6,
+    "bobSeconds": 2,
+    "reducedMotionLayout": "cards"
+  },
+  "replay": {
+    "variantRule": "alternate",
+    "shuffleIdeas": true
+  },
+  "scoring": {
+    "right": 2,
+    "costly": 0,
+    "unclear": 0,
+    "build": -1,
+    "missed": 0,
+    "floor": 0,
+    "floorAt": "roundEnd",
+    "max": 20,
+    "passAt": 13
+  },
+  "stars": {
+    "by": "total",
+    "max": 3,
+    "thresholds": {
+      "3": 18,
+      "2": 15,
+      "1": 13
+    },
+    "rules": {
+      "3": "三轮合计 18 分以上",
+      "2": "15 到 17 分",
+      "1": "13 到 14 分；低于 13 分没过",
+      "scoreFrom": "三轮分数相加，满分 20 分。用对原型 2 分，用贵了或看不懂 0 分，正式开发扣 1 分；每轮结束时统一算，低于 0 按 0 分计"
+    },
+    "feedback": {
+      "3": "你几分钟测完了别人一季度才测完的想法。",
+      "2": "大多测对了。下次先想：一张纸够不够？",
+      "1": "过关了，但时间花在造东西上了。先试，再造。"
+    }
+  },
+  "fail": {
+    "body": "想法还没测明白，再来一次？",
+    "autoUnlockAfter": 3,
+    "autoUnlockBody": "先往下走，回头再来拿星"
+  },
+  "learned": {
+    "summary": "验证想法，先用最便宜、最快的办法。能用纸试的，别用代码试。",
+    "tomorrow": "明天：下一个新想法，先画一张草图，拿给身边同事点一点。",
+    "disclaimer": "数据为游戏模拟"
+  },
+  "buttons": {
+    "start": "开始抢测",
+    "next": "下一轮",
+    "retry": "再来一次",
+    "backToMap": "回地图",
+    "replay": "重玩拿星"
+  },
+  "ui": {
+    "paused": "暂停",
+    "zeroDelta": "+0",
+    "unlocked": "已解锁",
+    "comeBack": "回来拿星",
+    "resumePrompt": "上次做到第 × 轮，接着做吗？",
+    "resumeContinue": "接着做",
+    "resumeRestart": "从头开始",
+    "learnedCollapsed": "这关学到了：能用纸试的，别用代码试",
+    "noteShowMs": 3000,
+    "calmToggle": "从容模式",
+    "calmToggleNote": "时间多一半",
+    "cardsToggle": "逐张出题",
+    "cardsToggleNote": "不飘走，等你选",
+    "cardsToggleSr": "用读屏建议打开",
+    "lagSwitchNext": "画面有点卡，后面改成一张一张出，计分不变。",
+    "lagSwitchNow": "画面有点卡，这轮改成逐张重来，前面的分数保留。",
+    "lagOk": "好的",
+    "lagKeep": "还是飘过",
+    "roundLabel": "第 × / × 轮",
+    "untimed": "不限时",
+    "pickFirst": "先点一个想法",
+    "testing": "测试中",
+    "waitTest": "先等这个测完",
+    "goneTag": "没测",
+    "roundScore": "本轮 × 分",
+    "roundFloor": "正式开发扣到底，本轮按 0 分计",
+    "srNewIdea": "来了一个想法",
+    "statsLine": "测出 × 个，× 个有人要，正式开发 × 次",
+    "cardCount": "第 × / × 张",
+    "benchLeft": "× · 还剩 × 秒",
+    "srSelected": "已选中",
+    "shouldUse": "该用：×",
+    "totalScore": "总分 × / ×",
+    "toolSeconds": "× 秒",
+    "srTool": "×，× 秒"
+  }
+}

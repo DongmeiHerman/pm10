@@ -11,11 +11,15 @@ export const UI_DEFAULTS = {
   noteShowMs: 3000
 };
 
-export function uiText(data) {
+export const STARS_SR = '得了 × 颗星，满分 × 颗';
+
+export function uiText(data, defaults) {
   const src = data && typeof data === 'object' && data.ui && typeof data.ui === 'object' ? data.ui : {};
-  const out = { ...UI_DEFAULTS };
-  for (const key of Object.keys(UI_DEFAULTS)) {
-    const fallback = UI_DEFAULTS[key];
+  const extra = defaults && typeof defaults === 'object' ? defaults : null;
+  const base = extra ? { ...UI_DEFAULTS, ...extra } : UI_DEFAULTS;
+  const out = { ...base };
+  for (const key of Object.keys(base)) {
+    const fallback = base[key];
     const value = src[key];
     if (typeof fallback === 'number') {
       if (typeof value === 'number' && Number.isFinite(value)) out[key] = value;

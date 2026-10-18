@@ -262,8 +262,8 @@ function about(gen) {
         <li>localStorage 的 pm10:l11-hint:v1：看过点卡片的提示</li>
         <li>localStorage 的 pm10:settings:v1：出星时震不震，默认开</li>
         <li>sessionStorage 里以 pm10:l11-run: 开头的键：这一局的牌序，关掉页面就没了</li>
-        <li>localStorage 的 pm10:l12-fails:v1：第 2 关连续没过的次数，按书和关卡分开记，过关就清掉</li>
-        <li>localStorage 的 pm10:l12-run:v1：第 2 关这一局做到哪张单子、哪个版本、句子顺序和前面几张的分数</li>
+        <li>localStorage 的 pm10:l12-fails:v1：第 2、3 关连续没过的次数，按书和关卡分开记，过关就清掉</li>
+        <li>localStorage 的 pm10:l12-run:v1：第 2、3 关这一局做到哪张单子、哪个版本、句子顺序和前面几张的分数。这一局用的从容模式、出题方式，以及是否因为卡顿改成逐张</li>
         <li>pm10:progress:v1 里的 autoUnlocked：连续没过达到次数后先解锁下一关，本关还没通关</li>
       </ul>
       <button type="button" class="btn" data-testid="clear-progress">清除本机进度</button>
