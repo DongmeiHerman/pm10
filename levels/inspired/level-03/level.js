@@ -1,4 +1,4 @@
-import { uiText, STARS_SR } from '../../../js/ui-text.js';
+import { uiText, STARS_SR, MISSED_SR, JUDGE_PLUS_SR, JUDGE_ZERO_SR, JUDGE_MINUS_SR } from '../../../js/ui-text.js';
 import { createCountdown, timerBarHTML } from '../../../js/timer-bar.js';
 import { testHookOn } from '../../../js/test-hook.js';
 import {
@@ -10,7 +10,8 @@ import {
 import { gradeOf, deltaOf, roundScore, starsFor, didPass } from './logic/score.js';
 import {
   LANE_COUNT, BUBBLE_W, BUBBLE_H, QUEUE_GAP,
-  initLanes, lanesStep, selectBubble, releaseBubble, benchBubble
+  initLanes, lanesStep, selectBubble, releaseBubble, benchBubble,
+  markBubbleDone, setTrackWidth
 } from './logic/lanes.js';
 import { initLagState, probeStep, guardStep } from './logic/lag.js';
 
@@ -121,8 +122,18 @@ function formatDelta(n, zero) {
 export function mount(root, meta, api) {
   let disposed = false;
   let live = null;
+  let judgeEl = null;
+  let judgeHist = 0;
+  let judgeCloseFromPop = false;
+  let judgeKeyBound = false;
+  let judgePopBound = false;
+  let dropPopListener = null;
+  let histChain = Promise.resolve();
+  let inerted = [];
+  let judgeReturnTool = '';
   let announcedKey = '';
   const announcedSet = new Set();
+  const missedSrSet = new Set();
   const timers = new Set();
   let countdown = null;
   let clickBound = false;
@@ -162,6 +173,30 @@ export function mount(root, meta, api) {
       window.removeEventListener('resize', onResize);
       resizeBound = false;
     }
+    if (judgeKeyBound) {
+      window.removeEventListener('keydown', onJudgeKey);
+      judgeKeyBound = false;
+    }
+    if (judgePopBound) {
+      window.removeEventListener('popstate', onJudgePop);
+      judgePopBound = false;
+    }
+    if (dropPopListener) {
+      window.removeEventListener('popstate', dropPopListener);
+      dropPopListener = null;
+    }
+    clearInert();
+    if (judgeEl) {
+      judgeEl.remove();
+      judgeEl = null;
+    }
+    // 只有还停在本关、且当前历史就是弹窗压上的那条时才退。hash 已经换过就别退，免得把路由拉回来。
+    if (judgeHist === 1 && judgeStateOnTop() && location.hash.indexOf('/level-03') !== -1) {
+      judgeHist = 0;
+      try { history.back(); } catch { /* ignore */ }
+    } else {
+      judgeHist = 0;
+    }
     const lagBox = root.querySelector('[data-testid="lag-dialog"]');
     if (lagBox) lagBox.remove();
   }
@@ -191,6 +226,15 @@ export function mount(root, meta, api) {
   const liveParent = root.parentNode;
   if (liveParent) liveParent.insertBefore(live, root.nextSibling);
   else document.body.appendChild(live);
+  // 判定弹窗跟 live 一样挂在 #app 外面，重绘不重建。关掉只藏起来，离开关卡再删。
+  const staleJudge = document.getElementById('l13-judge-pop');
+  if (staleJudge) staleJudge.remove();
+  judgeEl = document.createElement('div');
+  judgeEl.id = 'l13-judge-pop';
+  judgeEl.className = 'l13-judge';
+  judgeEl.hidden = true;
+  judgeEl.addEventListener('click', onJudgeClick);
+  document.body.appendChild(judgeEl);
   const bookId = (api && api.bookId) || data.book;
   const levelId = (api && api.levelId) || data.id;
   const params = new URLSearchParams(location.search);
@@ -389,6 +433,7 @@ export function mount(root, meta, api) {
   }
 
   function openLagNow() {
+    if (inputLocked || lockShown || roundEnding) return;
     if (lagKind || disposed || phase !== 'play' || !lagWatching()) return;
     lagKind = 'now';
     lagNeedFocus = true;
@@ -397,11 +442,13 @@ export function mount(root, meta, api) {
   }
 
   function queueLagNow() {
+    if (inputLocked || lockShown || roundEnding) return;
     if (lagKind || lagArm || lagRefused || disposed) return;
     if (!lagWatching() || phase !== 'play' || roundIndex <= 0) return;
     lagArm = true;
     later(() => {
       lagArm = false;
+      if (inputLocked || lockShown || roundEnding) return;
       if (disposed || lagKind || lagRefused || phase !== 'play' || !lagWatching()) return;
       openLagNow();
     }, 0);
@@ -416,6 +463,7 @@ export function mount(root, meta, api) {
   }
 
   function noteLagFrame(raw) {
+    if (inputLocked || lockShown || roundEnding) return;
     if (disposed || phase !== 'play' || !lagWatching() || lagKind) return;
     if (!lagState) lagState = initLagState(lagCfg());
     const force = hookOn() ? (params.get('l13lag') || '') : '';
@@ -514,6 +562,7 @@ export function mount(root, meta, api) {
     finishQueued = false;
     announcedKey = '';
     announcedSet.clear();
+    missedSrSet.clear();
   }
 
   function laneConfig(width) {
@@ -546,14 +595,7 @@ export function mount(root, meta, api) {
       laneState = initLanes(laneConfig(width));
       return;
     }
-    if (width > 0 && Math.abs(laneState.cfg.trackW - width) >= 1) {
-      laneState = {
-        cfg: { ...laneState.cfg, trackW: width },
-        elapsedMs: laneState.elapsedMs,
-        nextLane: laneState.nextLane,
-        bubbles: laneState.bubbles
-      };
-    }
+    laneState = setTrackWidth(laneState, width);
   }
 
   function ideaById(id) {
@@ -598,6 +640,14 @@ export function mount(root, meta, api) {
     live.textContent = `${ui.srNewIdea}：${idea.text}`;
   }
 
+  function announceMissed(idea) {
+    if (!live || !idea) return;
+    const key = `${roundIndex}:${idea.id}`;
+    if (missedSrSet.has(key)) return;
+    missedSrSet.add(key);
+    live.textContent = fill(MISSED_SR, [idea.text]);
+  }
+
   function pointOnCold(e) {
     const lanes = root.querySelector('[data-testid="lanes"]');
     if (!lanes || !laneState) return false;
@@ -622,6 +672,8 @@ export function mount(root, meta, api) {
       if (marks[b.id] && !marks[b.id].missed) continue;
       if (!marks[b.id]) marks[b.id] = { toolId: null, grade: null, delta: 0, missed: true };
       if (b.reason !== 'stay') continue;
+      // 只有正选中并停住的那只因停留时间到才播；飘走和排队超时不播。
+      if (old && old.selected && old.status === 'stopped') announceMissed(ideaById(b.id));
       const prevX = old && old.x != null ? old.x : 0;
       const lane = old && old.lane != null ? old.lane : (b.lane || 0);
       const track = next.cfg.trackW || 0;
@@ -663,15 +715,6 @@ export function mount(root, meta, api) {
       if (still > 0 && countdown && countdown.remaining <= 0) return;
       finishRound();
     }, 0);
-  }
-
-  function markBubbleDone(state, id) {
-    return {
-      cfg: state.cfg,
-      elapsedMs: state.elapsedMs,
-      nextLane: state.nextLane,
-      bubbles: state.bubbles.map(b => (b.id === id ? { ...b, status: 'done', selected: false, holdX: null } : b))
-    };
   }
 
   function bubbleNodeHTML(b) {
@@ -947,7 +990,8 @@ export function mount(root, meta, api) {
     if (on) pauseReasons.add(reason);
     else pauseReasons.delete(reason);
     if (countdown && !countdown.ended) {
-      if (pauseReasons.size) countdown.pause();
+      // 已锁轮时清掉暂停原因也不能把表重新跑起来。未锁时仍按原因集合决定。
+      if (lockShown || pauseReasons.size) countdown.pause();
       else countdown.start();
     }
     syncChrome();
@@ -1022,43 +1066,33 @@ export function mount(root, meta, api) {
     // 先停再画。freeze 会同步重入 onTick 并补走；testing 已空、judgeOpen 已开，重入不会再次判定。
     setPause('judge', true);
     draw();
-    const ms = Math.max(0, Number(data.judge && data.judge.showSeconds) || 0) * 1000;
-    later(() => {
-      if (disposed || judgeGen !== gen) return;
-      closeJudge();
-    }, ms);
+    armJudgeTimer(gen);
   }
 
-  function closeJudge() {
+  function closeJudge(opts) {
     if (!judgeOpen) return;
+    const fromPop = !!(opts && opts.fromPop);
+    judgeCloseFromPop = fromPop;
     judgeOpen = false;
     judgePayload = null;
     judgeGen += 1;
     teamHold = false;
-    setPause('judge', false);
+    // 先卸对话框再恢复计时、重画。重画会播下一张，不能叠在还开着的对话框上。
+    dismissJudgeDom({ fromPop });
+    judgeCloseFromPop = false;
     if (disposed || phase !== 'play') return;
+    setPause('judge', false);
     if (!rendersCards()) {
-      if (roundEnding || (countdown && countdown.ended)) {
-        lockRound();
-        return;
-      }
-      if (floatAllSettled() && !goneTags.length) {
-        finishRound();
-        return;
-      }
-      draw();
-      return;
+      if (roundEnding || (countdown && countdown.ended)) lockRound();
+      else if (floatAllSettled() && !goneTags.length) finishRound();
+      else draw();
+    } else {
+      ideaCursor += 1;
+      if (ideaCursor >= currentIdeas().length) finishRound();
+      else if (roundEnding || (countdown && countdown.ended)) lockRound();
+      else draw();
     }
-    ideaCursor += 1;
-    if (ideaCursor >= currentIdeas().length) {
-      finishRound();
-      return;
-    }
-    if (roundEnding || (countdown && countdown.ended)) {
-      lockRound();
-      return;
-    }
-    draw();
+    focusReturnTool();
   }
 
   function markUnresolvedMissed() {
@@ -1087,6 +1121,9 @@ export function mount(root, meta, api) {
     teamHold = false;
     timeUpVisible = false;
     phase = 'play';
+    // 脚本 't' 会在倒计时未结束时进来。先停表，且不写入 pauseReasons，条上不出现「暂停」。
+    // 正常路径是 countdown 已 ended（onEnd / roundEnding）才进这里，不会 pause。
+    if (countdown && !countdown.ended) countdown.pause();
     draw();
     later(() => {
       if (disposed || phase === 'summary' || phase === 'result') return;
@@ -1393,8 +1430,7 @@ export function mount(root, meta, api) {
     const buttons = data.tools.map(tool => {
       const label = muted ? ui.testing : tool.label;
       const aria = muted ? ui.testing : fill(ui.srTool, [tool.name, tool.seconds]);
-      const disabled = hard ? ' disabled' : '';
-      return `<button type="button" class="l13-tool${muted || hard ? ' is-muted' : ''}" style="--tool:${TOOL_COLOR[tool.id] || '#4C5FD5'}" data-act="tool" data-tool="${esc(tool.id)}" data-testid="tool-${esc(tool.id)}" aria-label="${esc(aria)}" aria-disabled="${muted || hard ? 'true' : 'false'}"${disabled}>
+      return `<button type="button" class="l13-tool${muted || hard ? ' is-muted' : ''}" style="--tool:${TOOL_COLOR[tool.id] || '#4C5FD5'}" data-act="tool" data-tool="${esc(tool.id)}" data-testid="tool-${esc(tool.id)}" aria-label="${esc(aria)}" aria-disabled="${muted || hard ? 'true' : 'false'}">
         <span class="l13-tool-top"><img src="${esc(toolIcon(tool.id))}" alt="" draggable="false"><span class="l13-tool-sec">${esc(fill(ui.toolSeconds, [tool.seconds]))}</span></span>
         <span class="l13-tool-label">${esc(label)}</span>
       </button>`;
@@ -1431,26 +1467,212 @@ export function mount(root, meta, api) {
     return `<button type="button" class="l13-hint" data-act="hint" data-testid="hint-tap">${imgShared('l11-icon-tap.svg')}<span>${esc(data.tapHint)}</span></button>`;
   }
 
-  function judgeHTML() {
-    if (!judgeOpen || !judgePayload) return '';
+  function judgeDeltaSr(delta) {
+    const n = Math.abs(Number(delta) || 0);
+    if (Number(delta) < 0) return fill(JUDGE_MINUS_SR, [n]);
+    if (Number(delta) > 0) return fill(JUDGE_PLUS_SR, [n]);
+    return JUDGE_ZERO_SR;
+  }
+
+  function judgeMarkHTML(grade) {
+    if (grade === 'right') {
+      return `<span class="l13-mark is-right" data-testid="judge-mark" aria-hidden="true"><img src="${esc(shared('l11-icon-check.svg'))}" alt="" aria-hidden="true" draggable="false"></span>`;
+    }
+    if (grade === 'costly') {
+      return `<span class="l13-mark is-costly" data-testid="judge-mark" aria-hidden="true"><i class="l13-minus" aria-hidden="true"></i></span>`;
+    }
+    if (grade === 'unclear') {
+      return `<span class="l13-mark is-unclear" data-testid="judge-mark" aria-hidden="true"><img src="${esc(shared('l11-icon-question.svg'))}" alt="" aria-hidden="true" draggable="false"></span>`;
+    }
+    return `<span class="l13-mark is-build" data-testid="judge-mark" aria-hidden="true"><i class="l13-x" aria-hidden="true"></i></span>`;
+  }
+
+  function judgeBodyHTML() {
     const { idea, grade, delta, toolId } = judgePayload;
-    let mark = '';
-    if (grade === 'right') mark = `<span class="l13-mark is-right" data-testid="judge-mark">${imgShared('l11-icon-check.svg')}</span>`;
-    else if (grade === 'costly') mark = `<span class="l13-mark is-costly" data-testid="judge-mark"><i class="l13-minus" aria-hidden="true"></i></span>`;
-    else if (grade === 'unclear') mark = `<span class="l13-mark is-unclear" data-testid="judge-mark">${imgShared('l11-icon-question.svg')}</span>`;
-    else mark = `<span class="l13-mark is-build" data-testid="judge-mark"><i class="l13-x" aria-hidden="true"></i></span>`;
-    const verdict = grade === 'unclear' ? '' : `<p class="l13-judge-row" data-testid="judge-verdict"><img class="l13-thumb" src="${esc(own(idea.real ? 'l13-thumb-up.svg' : 'l13-thumb-down.svg'))}" alt="" draggable="false"><span>${esc(idea.real ? data.verdict.yes : data.verdict.no)}</span></p>`;
-    return `<div class="l13-judge" data-testid="judge-pop" data-act="close-judge">
-      <div class="l13-judge-card is-${esc(grade)}" data-grade="${esc(grade)}">
-        <i class="l13-judge-bar" aria-hidden="true"></i>
-        <div class="l13-judge-body">
-          <p class="l13-judge-row" data-testid="judge-grade">${mark}<span>${esc(data.grade[grade] || '')}</span></p>
+    const verdict = grade === 'unclear' ? '' : `<p class="l13-judge-row" data-testid="judge-verdict"><img class="l13-thumb" src="${esc(own(idea.real ? 'l13-thumb-up.svg' : 'l13-thumb-down.svg'))}" alt="" aria-hidden="true" draggable="false"><span>${esc(idea.real ? data.verdict.yes : data.verdict.no)}</span></p>`;
+    const cont = rendersCards()
+      ? `<button type="button" class="l13-judge-continue" data-testid="judge-continue">${esc((data.buttons && data.buttons.continue) || '')}</button>`
+      : '';
+    return `<div class="l13-judge-card is-${esc(grade)}" data-grade="${esc(grade)}">
+      <i class="l13-judge-bar" aria-hidden="true"></i>
+      <div class="l13-judge-body">
+        <p class="l13-judge-row" data-testid="judge-grade">${judgeMarkHTML(grade)}<span id="l13-judge-l1">${esc(data.grade[grade] || '')}</span></p>
+        <div class="l13-judge-l2" id="l13-judge-l2">
           ${verdict}
           <p class="l13-judge-row" data-testid="judge-feedback">${esc(feedbackOf(grade, toolId))}</p>
-          <p class="l13-judge-row l13-delta" data-testid="judge-delta">${esc(formatDelta(delta, ui.zeroDelta))}</p>
         </div>
+        <p class="l13-judge-row l13-delta" id="l13-judge-l3">
+          <span data-testid="judge-delta" aria-hidden="true">${esc(formatDelta(delta, ui.zeroDelta))}</span>
+          <span class="visually-hidden" data-testid="judge-delta-sr">${esc(judgeDeltaSr(delta))}</span>
+        </p>
+        ${cont}
       </div>
     </div>`;
+  }
+
+  function clearInert() {
+    for (const el of inerted) {
+      try { el.removeAttribute('inert'); } catch { /* ignore */ }
+    }
+    inerted = [];
+  }
+
+  function applyInert() {
+    clearInert();
+    if (!judgeEl) return;
+    for (const child of document.body.children) {
+      if (child === judgeEl || child.id === 'l13-sr-live') continue;
+      if (child.tagName === 'SCRIPT') continue;
+      if (child.contains(judgeEl)) continue;
+      if (child.hasAttribute('inert')) continue;
+      child.setAttribute('inert', '');
+      inerted.push(child);
+    }
+  }
+
+  function focusEl(el) {
+    if (!el) return;
+    try { el.focus({ preventScroll: true }); }
+    catch {
+      try { el.focus(); } catch { /* ignore */ }
+    }
+  }
+
+  function focusReturnTool() {
+    const id = judgeReturnTool;
+    if (!id) return;
+    focusEl(root.querySelector(`[data-testid="tool-${id}"]`));
+  }
+
+  function judgeStateOnTop() {
+    try { return !!(history.state && history.state.l13Judge); }
+    catch { return false; }
+  }
+
+  // 只做 Esc 和 popstate。打开时 pushState 一条；返回键的 popstate 只关弹窗。
+  // 点掉、Esc、到时关掉时把这条历史退掉。hashchange 仍交给 main.js。
+  function armJudgeHistory() {
+    const push = () => {
+      if (disposed || !judgeOpen || judgeHist === 1) return;
+      try {
+        history.pushState({ l13Judge: 1 }, '', location.href);
+        judgeHist = 1;
+      } catch { /* 没有历史接口时只剩 Esc */ }
+    };
+    if (judgeHist === 2) {
+      histChain = histChain.then(push);
+      return;
+    }
+    push();
+  }
+
+  function releaseJudgeHistory(fromPop) {
+    if (fromPop) {
+      judgeHist = 0;
+      return;
+    }
+    if (judgeHist !== 1) return;
+    // 当前条已经不是弹窗压上去的，别 back，否则会把关卡退掉。
+    if (!judgeStateOnTop()) {
+      judgeHist = 0;
+      return;
+    }
+    judgeHist = 2;
+    histChain = new Promise((resolve) => {
+      const onPop = () => {
+        window.removeEventListener('popstate', onPop);
+        if (dropPopListener === onPop) dropPopListener = null;
+        if (judgeHist === 2) judgeHist = 0;
+        resolve();
+      };
+      dropPopListener = onPop;
+      window.addEventListener('popstate', onPop);
+      try { history.back(); }
+      catch {
+        window.removeEventListener('popstate', onPop);
+        dropPopListener = null;
+        if (judgeHist === 2) judgeHist = 0;
+        resolve();
+      }
+    });
+  }
+
+  function dismissJudgeDom(opts) {
+    const fromPop = !!(opts && opts.fromPop);
+    clearInert();
+    if (judgeEl) {
+      judgeEl.hidden = true;
+      judgeEl.removeAttribute('data-testid');
+      judgeEl.removeAttribute('data-act');
+      judgeEl.removeAttribute('role');
+      judgeEl.removeAttribute('aria-modal');
+      judgeEl.removeAttribute('aria-labelledby');
+      judgeEl.removeAttribute('aria-describedby');
+      judgeEl.removeAttribute('tabindex');
+      judgeEl.innerHTML = '';
+    }
+    releaseJudgeHistory(fromPop);
+  }
+
+  function openJudgeDom() {
+    if (!judgeEl || !judgePayload) return;
+    judgeEl.hidden = false;
+    judgeEl.setAttribute('data-testid', 'judge-pop');
+    judgeEl.setAttribute('data-act', 'close-judge');
+    judgeEl.setAttribute('role', 'dialog');
+    judgeEl.setAttribute('aria-modal', 'true');
+    judgeEl.setAttribute('tabindex', '-1');
+    judgeEl.setAttribute('aria-labelledby', 'l13-judge-l1');
+    judgeEl.setAttribute('aria-describedby', 'l13-judge-l2 l13-judge-l3');
+    judgeEl.innerHTML = judgeBodyHTML();
+    applyInert();
+    focusEl(judgeEl.querySelector('[data-testid="judge-continue"]') || judgeEl);
+    armJudgeHistory();
+  }
+
+  function syncJudge() {
+    if (disposed || !judgeEl) return;
+    if (judgeOpen && judgePayload) {
+      if (judgeEl.hidden || judgeEl.getAttribute('data-testid') !== 'judge-pop') openJudgeDom();
+      return;
+    }
+    if (!judgeEl.hidden || judgeEl.getAttribute('role') === 'dialog' || judgeHist === 1) {
+      const fromPop = judgeCloseFromPop;
+      judgeCloseFromPop = false;
+      dismissJudgeDom({ fromPop });
+    }
+  }
+
+  function armJudgeTimer(gen) {
+    if (rendersCards()) return;
+    const ms = Math.max(0, Number(data.judge && data.judge.showSeconds) || 0) * 1000;
+    later(() => {
+      if (disposed || judgeGen !== gen || !judgeOpen) return;
+      closeJudge();
+    }, ms);
+  }
+
+  function onJudgeClick(e) {
+    if (disposed || !judgeOpen) return;
+    e.preventDefault();
+    e.stopPropagation();
+    closeJudge();
+  }
+
+  function onJudgeKey(e) {
+    if (disposed || !judgeOpen) return;
+    if (e.key !== 'Escape' && e.key !== 'Esc') return;
+    e.preventDefault();
+    e.stopPropagation();
+    closeJudge();
+  }
+
+  function onJudgePop() {
+    if (disposed) return;
+    if (judgeHist === 2) return;
+    if (judgeHist !== 1) return;
+    judgeHist = 0;
+    if (judgeOpen) closeJudge({ fromPop: true });
   }
 
   function summaryHTML() {
@@ -1696,6 +1918,7 @@ export function mount(root, meta, api) {
     syncTeam();
     syncChrome();
     focusLagDialog();
+    syncJudge();
     if (phase === 'result' && resultArmed) {
       resultArmed = false;
       armLearned();
@@ -1758,10 +1981,12 @@ export function mount(root, meta, api) {
     }
     const toast = toastText ? `<div class="l13-toast" data-testid="level-toast" role="status">${esc(toastText)}</div>` : '';
     const starAttr = phase === 'result' ? ` data-stars="${stars}"` : '';
+    // 关卡内部的 lagKind。只在本机且 l13test=1 时写到根节点，关着不写。
+    const lagAttr = hookOn() ? ` data-lag-kind="${esc(lagKind)}"` : '';
     const roundLabel = (phase === 'play' || phase === 'timeup' || phase === 'summary')
       ? `<span class="l13-round" data-testid="round-label">${esc(fill(ui.roundLabel, [roundIndex + 1, data.rounds.length]))}</span>`
       : '';
-    root.innerHTML = `<div class="l13" data-testid="level" data-screen="${phase}" data-round="${esc(roundAttr())}" data-variant="${esc(variantAttr())}" data-layout="${rendersCards() ? 'cards' : 'float'}" data-layout-choice="${esc(layout)}" data-layout-source="${esc(layoutSource)}" data-calm="${calm ? '1' : '0'}" data-locked="${inputLocked ? 'true' : 'false'}" data-score="${total}"${starAttr}>
+    root.innerHTML = `<div class="l13" data-testid="level" data-screen="${phase}" data-round="${esc(roundAttr())}" data-variant="${esc(variantAttr())}" data-layout="${rendersCards() ? 'cards' : 'float'}" data-layout-choice="${esc(layout)}" data-layout-source="${esc(layoutSource)}" data-calm="${calm ? '1' : '0'}" data-locked="${inputLocked ? 'true' : 'false'}" data-score="${total}"${starAttr}${lagAttr}>
       <header class="l13-top">
         <button type="button" class="l13-back" data-act="back" data-testid="back" aria-label="返回">${imgShared('ui-back.svg')}<span class="visually-hidden">返回</span></button>
         <h1>${esc(data.title)}</h1>
@@ -1770,7 +1995,6 @@ export function mount(root, meta, api) {
       <div class="l13-main">${main}</div>
       ${dock ? `<div class="l13-dock">${dock}</div>` : ''}
       ${overlay}
-      ${judgeHTML()}
       ${lagHTML()}
       ${toast}
     </div>`;
@@ -1815,6 +2039,7 @@ export function mount(root, meta, api) {
       const n = Number(params.get('l13ff'));
       if (Number.isFinite(n) && n > 0 && n < seconds) seconds = n;
     }
+    judgeReturnTool = toolId;
     testing = { toolId, seconds, startElapsed: countdown.elapsed, ideaId: idea.id };
     if (!rendersCards() && laneState) laneState = benchBubble(laneState, idea.id);
     teamHold = toolId === 'build';
@@ -1886,7 +2111,13 @@ export function mount(root, meta, api) {
       syncPromptAndTools();
       return;
     }
-    if (act === 'tool') { beginTest(el.getAttribute('data-tool')); return; }
+    if (act === 'tool') {
+      // 原来靠 disabled 拦住的只有锁死（inputLocked）。置灰改成 aria-disabled 后这里自己拦。
+      // 测试中、没选中只有 aria-disabled，仍交给 beginTest 弹原来的提示。
+      if (inputLocked && (el.getAttribute('aria-disabled') === 'true' || el.disabled)) return;
+      beginTest(el.getAttribute('data-tool'));
+      return;
+    }
     if (act === 'next') { goNext(); return; }
     if (act === 'replay' || act === 'retry') { replay(); return; }
     if (act === 'learned') {
@@ -1924,6 +2155,10 @@ export function mount(root, meta, api) {
   resizeBound = true;
   root.addEventListener('click', onClick);
   window.addEventListener('resize', onResize);
+  window.addEventListener('keydown', onJudgeKey);
+  window.addEventListener('popstate', onJudgePop);
+  judgeKeyBound = true;
+  judgePopBound = true;
 
   fetch(shared('l11-team.svg')).then(res => res.text()).then(text => {
     if (disposed) return;
@@ -1937,7 +2172,9 @@ export function mount(root, meta, api) {
   try { saved = readResume(bookId, levelId); } catch { saved = null; }
   try { run = readLevelRun(bookId, levelId); } catch { run = null; }
   if (!saved) {
-    try { clearLevelRun(bookId, levelId); } catch { /* ignore */ }
+    if (!hookOn()) {
+      try { clearLevelRun(bookId, levelId); } catch { /* ignore */ }
+    }
     run = null;
   }
   if (disposed) return unmount;

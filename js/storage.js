@@ -1,3 +1,4 @@
+import { testHookOn } from './test-hook.js';
 // 进度存储：总键 pm10:progress:v1，内部按 "<book-id>/<level-id>" 记录每关；存储不可用时退回内存
 export const PROGRESS_KEY = 'pm10:progress:v1';
 export const levelKey = (bookId, levelId) => `${bookId}/${levelId}`;
@@ -31,9 +32,18 @@ function expireResumes(p){
   return changed;
 }
 
+const TEST_HOOK_FLAGS = ['l12test', 'l13test', 'l14test'];
+function hookSkipsExpireWrite(){
+  try{
+    if(typeof location === 'undefined' || !location) return false;
+    return TEST_HOOK_FLAGS.some(flag => testHookOn(location.hostname, location.search, flag));
+  }catch{ return false; }
+}
+
 export function loadProgress(){
   const p = readRaw();
-  if(expireResumes(p)) saveProgress(p);
+  // 过期的 resume 先在返回值里置空。测试开关开着时不写回；没有 location 时照常写回。
+  if(expireResumes(p) && !hookSkipsExpireWrite()) saveProgress(p);
   return p;
 }
 export function saveProgress(p){const s=JSON.stringify(p);try{store?store.setItem(PROGRESS_KEY,s):(mem[PROGRESS_KEY]=s);}catch{mem[PROGRESS_KEY]=s;}}

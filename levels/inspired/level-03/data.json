@@ -294,6 +294,7 @@
   "buttons": {
     "start": "开始抢测",
     "next": "下一轮",
+    "continue": "继续",
     "retry": "再来一次",
     "backToMap": "回地图",
     "replay": "重玩拿星"

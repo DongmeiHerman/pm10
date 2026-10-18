@@ -94,6 +94,8 @@ export function createCountdown({ durationMs, onTick, onEnd, pauseOnHidden, onHi
       if (onEnd) onEnd();
       return;
     }
+    // onTick / onFrame 里若 pause() 把 running 关掉，不再多排一帧。
+    if (!running) return;
     raf = requestAnimationFrame(frame);
   }
 

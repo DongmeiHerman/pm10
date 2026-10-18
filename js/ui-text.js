@@ -12,6 +12,11 @@ export const UI_DEFAULTS = {
 };
 
 export const STARS_SR = '得了 × 颗星，满分 × 颗';
+export const MISSED_SR = '×，没测';
+// 判定弹窗分数行的读屏句。× 换成数字。画面仍写 +2 / +0 / -1，不进 data.json。
+export const JUDGE_PLUS_SR = '加 × 分';
+export const JUDGE_ZERO_SR = '加 0 分';
+export const JUDGE_MINUS_SR = '减 × 分';
 
 export function uiText(data, defaults) {
   const src = data && typeof data === 'object' && data.ui && typeof data.ui === 'object' ? data.ui : {};

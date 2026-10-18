@@ -50,7 +50,7 @@ background:url("./assets/l13-idea.svg") center / 100% 100% no-repeat;color:#1f24
 .l13-tool-label{font-size:16px;line-height:1.1}
 .l13-tool.is-muted{background:#f3f6fb;border-color:#c9cfdb;color:#9aa1b2}
 .l13-tool.is-muted img{filter:grayscale(1)}
-.l13-tool:disabled{background:#f3f6fb;border-color:#c9cfdb;color:#9aa1b2;cursor:default}
+.l13-tool[aria-disabled="true"]{background:#f3f6fb;border-color:#c9cfdb;color:#9aa1b2;cursor:default}
 .l13-bench{min-height:40px;display:flex;align-items:center;gap:8px}
 .l13-bench.has-banner{flex-direction:column;align-items:center}
 .l13-bench.has-banner .l13-bench-main{width:100%}
@@ -85,7 +85,9 @@ background:url("./assets/l13-idea.svg") center / 100% 100% no-repeat;color:#1f24
 .l13-learned-more{position:absolute;left:0;right:0;bottom:100%;margin-bottom:8px;background:#fff;border:2px solid #d9dfea;border-radius:12px;padding:8px;box-shadow:0 6px 0 #d9dfea}
 .l13-learned-more p{margin:0 0 4px;font-size:14px;line-height:1.4}
 .l13-note{font-weight:300;color:#5b6275;font-size:12px}
-.l13-judge{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;padding:16px;background:transparent}
+.l13-judge{position:fixed;z-index:35;top:calc(64px + env(safe-area-inset-top));bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);display:flex;align-items:center;justify-content:center;padding:16px;background:transparent}
+.l13-judge[hidden]{display:none !important}
+.l13-judge-continue{flex:none;box-sizing:border-box;min-width:44px;min-height:48px;width:100%;margin:0;padding:8px 16px;border:0;border-radius:999px;background:#2f3e9e;color:#fff;box-shadow:0 6px 0 #22268a;font:inherit;font-size:17px;line-height:1.2;cursor:pointer}
 .l13-judge-card{width:min(100%,340px);display:flex;border-radius:12px;overflow:hidden;box-shadow:0 6px 0 #d9dfea;color:#1f2433}
 .l13-judge-card.is-right{background:#e8f7f0}
 .l13-judge-card.is-costly{background:#eef0f4}
@@ -95,6 +97,7 @@ background:url("./assets/l13-idea.svg") center / 100% 100% no-repeat;color:#1f24
 .l13-judge-card.is-costly .l13-judge-bar{background:#9aa1b2}
 .l13-judge-card.is-unclear .l13-judge-bar,.l13-judge-card.is-build .l13-judge-bar{background:#ff8a3d}
 .l13-judge-body{flex:1;min-width:0;padding:12px;display:flex;flex-direction:column;gap:8px}
+.l13-judge-l2{display:flex;flex-direction:column;gap:8px}
 .l13-judge-row{display:flex;align-items:center;gap:8px;margin:0;font-size:16px;line-height:1.35;color:#1f2433}
 .l13-mark{flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .l13-mark img{width:20px;height:20px}

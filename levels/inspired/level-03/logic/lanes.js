@@ -230,3 +230,21 @@ export function benchBubble(state, id) {
   target.holdX = null;
   return repaint(next);
 }
+
+export function markBubbleDone(state, id) {
+  const next = copyState(state);
+  for (const b of next.bubbles) {
+    if (b.id !== id) continue;
+    b.status = 'done';
+    b.selected = false;
+    b.holdX = null;
+  }
+  return next;
+}
+
+export function setTrackWidth(state, width) {
+  if (!(width > 0) || Math.abs(state.cfg.trackW - width) < 1) return state;
+  const next = copyState(state);
+  next.cfg = { ...state.cfg, trackW: width };
+  return next;
+}
