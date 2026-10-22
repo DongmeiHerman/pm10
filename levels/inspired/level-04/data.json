@@ -1,0 +1,707 @@
+{
+  "version": 1,
+  "id": "level-04",
+  "book": "inspired",
+  "title": "老板的需求清单",
+  "teaches": "团队要对问题负责，不是对功能清单负责",
+  "duration": "4 分钟",
+  "intro": {
+    "title": "老板的需求清单",
+    "body": "老板、销售、同事轮番来找你。",
+    "button": "开始上班"
+  },
+  "tapHint": "挑一句回话。点一下就定，改不了。",
+  "speakers": [
+    {
+      "id": "boss",
+      "name": "老板",
+      "avatar": "l11-boss.svg"
+    },
+    {
+      "id": "sales",
+      "name": "销售老周",
+      "avatar": "l14-sales.svg"
+    },
+    {
+      "id": "engineer",
+      "name": "工程师小李",
+      "avatar": "l14-engineer.svg"
+    },
+    {
+      "id": "ops",
+      "name": "运营小唐",
+      "avatar": "l14-ops.svg"
+    },
+    {
+      "id": "designer",
+      "name": "设计师阿雅",
+      "avatar": "l14-aya.svg"
+    }
+  ],
+  "bars": [
+    {
+      "id": "morale",
+      "label": "团队士气",
+      "short": "士气",
+      "start": 8,
+      "max": 16
+    },
+    {
+      "id": "result",
+      "label": "业务结果",
+      "short": "结果",
+      "start": 8,
+      "max": 16
+    }
+  ],
+  "types": [
+    {
+      "id": "own",
+      "tag": "对问题负责",
+      "delta": {
+        "morale": 1,
+        "result": 1
+      }
+    },
+    {
+      "id": "list",
+      "tag": "照单全收",
+      "delta": {
+        "morale": -1,
+        "result": 0
+      }
+    },
+    {
+      "id": "loud",
+      "tag": "谁喊听谁",
+      "delta": {
+        "morale": -1,
+        "result": 1
+      }
+    },
+    {
+      "id": "block",
+      "tag": "硬挡回去",
+      "delta": {
+        "morale": 1,
+        "result": -1
+      }
+    },
+    {
+      "id": "timeout",
+      "tag": "没表态",
+      "delta": {
+        "morale": -1,
+        "result": -1
+      },
+      "countAs": "loud"
+    }
+  ],
+  "acts": [
+    {
+      "id": "A1",
+      "title": "周一早会",
+      "variants": [
+        {
+          "id": "A1-1",
+          "nodes": [
+            {
+              "id": "a11-1",
+              "speaker": "boss",
+              "line": "这季度做完清单上 8 个功能。第 3 个，销售答应客户了。",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a11-1o",
+                  "text": "这 8 个功能想解决什么问题？",
+                  "type": "own",
+                  "after": "老板：「新用户留不住，次月一半都走了。」"
+                },
+                {
+                  "id": "a11-1l",
+                  "text": "好的，我今天就把 8 个全排进去。",
+                  "type": "list",
+                  "after": "8 个全排进去了，排期一直排到季度末。"
+                },
+                {
+                  "id": "a11-1b",
+                  "text": "做不完，我先砍掉一半。",
+                  "type": "block",
+                  "after": "没说依据，大家不知道该砍哪一半。"
+                }
+              ]
+            },
+            {
+              "id": "a11-2",
+              "speaker": "boss",
+              "line": "这季度目标是把新用户留下来。清单你看着分吧。",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a11-2l",
+                  "text": "按清单平分给工程师",
+                  "type": "list",
+                  "after": "大家各做各的，没人知道为什么做。"
+                },
+                {
+                  "id": "a11-2o",
+                  "text": "把问题摆给团队，一起看数据",
+                  "type": "own",
+                  "after": "小李发现：注册要填 6 页资料，很多人第 2 页就走了。"
+                },
+                {
+                  "id": "a11-2s",
+                  "text": "先做销售答应客户的那一个",
+                  "type": "loud",
+                  "after": "客户高兴了，团队的计划往后推。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "A1-2",
+          "nodes": [
+            {
+              "id": "a12-1",
+              "speaker": "boss",
+              "line": "续费的老用户现在越来越少了。清单八个功能，季度末前上线。",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a12-1o",
+                  "text": "我先去问问不续费的用户",
+                  "type": "own",
+                  "after": "一问才知道：很多人找不到上次学到哪。"
+                },
+                {
+                  "id": "a12-1l",
+                  "text": "行，8 个功能我按顺序排",
+                  "type": "list",
+                  "after": "工程师接过清单，没人问为什么。"
+                },
+                {
+                  "id": "a12-1s",
+                  "text": "先做销售答应客户的那个",
+                  "type": "loud",
+                  "after": "客户高兴了，别的全往后推。"
+                }
+              ]
+            },
+            {
+              "id": "a12-2",
+              "speaker": "engineer",
+              "line": "用户总说找不着上回学到哪了。可清单里没这一条，做不做？",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a12-2l",
+                  "text": "不在清单上，先别做吧？",
+                  "type": "list",
+                  "after": "清单照走，用户还是找不到。"
+                },
+                {
+                  "id": "a12-2o",
+                  "text": "先做个小样，找几个人试试",
+                  "type": "own",
+                  "after": "小李当天就画出了「接着学」按钮。"
+                },
+                {
+                  "id": "a12-2b",
+                  "text": "不做，清单外的一律不接",
+                  "type": "block",
+                  "after": "这事没再提，用户还是找不到上次学到哪。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "title": "季度中",
+      "variants": [
+        {
+          "id": "A2-1",
+          "nodes": [
+            {
+              "id": "a21-1",
+              "speaker": "sales",
+              "line": "大客户那个功能下周必须上线！不上这单就丢了。",
+              "timeLimit": 24,
+              "options": [
+                {
+                  "id": "a21-1s",
+                  "text": "行，让大家先停下手上的活",
+                  "type": "loud",
+                  "after": "这单稳了，团队手上的活全断了。"
+                },
+                {
+                  "id": "a21-1b",
+                  "text": "不做，你找别人吧。",
+                  "type": "block",
+                  "after": "客户的需求没人接，这单交给老板拍板。"
+                },
+                {
+                  "id": "a21-1o",
+                  "text": "客户到底想解决什么问题？",
+                  "type": "own",
+                  "after": "一问才知道，改个现有设置就行。"
+                }
+              ],
+              "waitLabel": "老周在等你回话",
+              "timeoutAfter": "你没表态，老周当你答应了。"
+            },
+            {
+              "id": "a21-2",
+              "speaker": "engineer",
+              "line": "注册资料我能砍到只剩一页了，可清单第五、六个就排不下了。",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a21-2o",
+                  "text": "先砍资料页，5、6 往后挪",
+                  "type": "own",
+                  "after": "第一周留下来的新用户变多了。"
+                },
+                {
+                  "id": "a21-2l",
+                  "text": "清单优先，资料页以后再说",
+                  "type": "list",
+                  "after": "清单进度好看，新用户还在第 2 页走掉。"
+                },
+                {
+                  "id": "a21-2s",
+                  "text": "老板在催第 3 个，先做那个",
+                  "type": "loud",
+                  "after": "老板满意了一天，留存没动。"
+                }
+              ]
+            },
+            {
+              "id": "a21-3",
+              "speaker": "ops",
+              "line": "下周大促，首页加个弹窗行吗？就一个，很简单。",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a21-3l",
+                  "text": "要不要排进清单最后一个？",
+                  "type": "list",
+                  "after": "清单又长了一行，没人说得清为什么。"
+                },
+                {
+                  "id": "a21-3o",
+                  "text": "先看它会不会挡住新用户",
+                  "type": "own",
+                  "after": "一测，弹窗挡住了注册，小唐同意换位置。"
+                },
+                {
+                  "id": "a21-3b",
+                  "text": "首页的事不归你们管。",
+                  "type": "block",
+                  "after": "弹窗的事没商量出结果，小唐请老板来定。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "A2-2",
+          "nodes": [
+            {
+              "id": "a22-1",
+              "speaker": "sales",
+              "line": "大客户要导出全部的学员数据，明天就要！",
+              "timeLimit": 24,
+              "options": [
+                {
+                  "id": "a22-1s",
+                  "text": "好，今晚就赶出来",
+                  "type": "loud",
+                  "after": "客户满意了，数据给出去谁能看，没人说清。"
+                },
+                {
+                  "id": "a22-1b",
+                  "text": "明天不可能，别找我。",
+                  "type": "block",
+                  "after": "导出没人接，老周把这事报给了老板。"
+                },
+                {
+                  "id": "a22-1o",
+                  "text": "导出是想拿来做什么？",
+                  "type": "own",
+                  "after": "原来客户只想看完课率，现有报表就有。"
+                }
+              ],
+              "waitLabel": "老周在等你回话",
+              "timeoutAfter": "你没表态，老周当你答应了。"
+            },
+            {
+              "id": "a22-2",
+              "speaker": "designer",
+              "line": "「接着学」的按钮已经做好了，可要挤掉首页一个推广位。",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a22-2o",
+                  "text": "先拿一半用户试一周",
+                  "type": "own",
+                  "after": "试下来，用过按钮的人续费明显多。"
+                },
+                {
+                  "id": "a22-2s",
+                  "text": "市场部会闹，推广位不动",
+                  "type": "loud",
+                  "after": "市场部没意见，按钮挪到了第三屏。"
+                },
+                {
+                  "id": "a22-2l",
+                  "text": "清单上没这项，先放着",
+                  "type": "list",
+                  "after": "按钮做好了，一直没上线。"
+                }
+              ]
+            },
+            {
+              "id": "a22-3",
+              "speaker": "ops",
+              "line": "能不能每天给用户推三条消息？提醒他们来上课。",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a22-3l",
+                  "text": "加进清单，排到第 9 个",
+                  "type": "list",
+                  "after": "清单又长了一行，没人说得清为什么。"
+                },
+                {
+                  "id": "a22-3o",
+                  "text": "先给一小批人试试看",
+                  "type": "own",
+                  "after": "试下来推送一多，退订的人也多了。"
+                },
+                {
+                  "id": "a22-3b",
+                  "text": "推送太烦人，不做。",
+                  "type": "block",
+                  "after": "推送的事没谈出办法，老板拍板先每天推一条。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A3",
+      "title": "季度末",
+      "variants": [
+        {
+          "id": "A3-1",
+          "nodes": [
+            {
+              "id": "a31-1",
+              "speaker": "boss",
+              "line": "竞品上了积分，我们也必须有！月底前上线。",
+              "timeLimit": 24,
+              "options": [
+                {
+                  "id": "a31-1s",
+                  "text": "好，我让大家加班赶出来",
+                  "type": "loud",
+                  "after": "积分上线了，团队累垮，留存没动。"
+                },
+                {
+                  "id": "a31-1b",
+                  "text": "竞品做什么，跟我们没关系。",
+                  "type": "block",
+                  "after": "积分交给了别的组，你没再听到这事。"
+                },
+                {
+                  "id": "a31-1o",
+                  "text": "先看我们的用户缺不缺积分",
+                  "type": "own",
+                  "after": "数据看下来，流失的人没一个提到积分。"
+                }
+              ],
+              "waitLabel": "老板在等你回话",
+              "timeoutAfter": "你没表态，老板当你答应了。"
+            },
+            {
+              "id": "a31-2",
+              "speaker": "engineer",
+              "line": "资料页砍完，新人还是留不住。我有个办法，想试试。",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a31-2o",
+                  "text": "好，先找一小批人试一周",
+                  "type": "own",
+                  "after": "小李的办法，让第一周留下的人又多了。"
+                },
+                {
+                  "id": "a31-2l",
+                  "text": "清单还没做完，哪有空试？",
+                  "type": "list",
+                  "after": "清单划掉两行，小李的办法没人试。"
+                },
+                {
+                  "id": "a31-2s",
+                  "text": "销售又在催，先顾那边",
+                  "type": "loud",
+                  "after": "销售那单保住了，小李的办法没了下文。"
+                }
+              ]
+            },
+            {
+              "id": "a31-3",
+              "speaker": "boss",
+              "line": "季度末了，这季度做成了什么？",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a31-3l",
+                  "text": "我们上线了 8 个功能。",
+                  "type": "list",
+                  "after": "老板：「那留存呢？」"
+                },
+                {
+                  "id": "a31-3o",
+                  "text": "讲留存变了多少，和为什么",
+                  "type": "own",
+                  "after": "老板：「下季度这个问题继续交给你们。」",
+                  "betterSay": "讲清留存变了多少、为什么变"
+                },
+                {
+                  "id": "a31-3b",
+                  "text": "这季度我们挡掉了一堆需求。",
+                  "type": "block",
+                  "after": "老板：「挡掉之后，换来了什么？」"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "A3-2",
+          "nodes": [
+            {
+              "id": "a32-1",
+              "speaker": "boss",
+              "line": "竞品那边上线了智能助教功能！我们下个月也要有！",
+              "timeLimit": 24,
+              "options": [
+                {
+                  "id": "a32-1s",
+                  "text": "好，全组先停下做助教",
+                  "type": "loud",
+                  "after": "助教赶出来了，没几个人用。"
+                },
+                {
+                  "id": "a32-1b",
+                  "text": "AI 就是个噱头，我们不跟。",
+                  "type": "block",
+                  "after": "老板没再问你，助教直接排给了别的组。"
+                },
+                {
+                  "id": "a32-1o",
+                  "text": "先查用户卡在哪，再说助教",
+                  "type": "own",
+                  "after": "数据看下来，用户卡的是进度，不是答疑。"
+                }
+              ],
+              "waitLabel": "老板在等你回话",
+              "timeoutAfter": "你没表态，老板当你答应了。"
+            },
+            {
+              "id": "a32-2",
+              "speaker": "engineer",
+              "line": "「接着学」上线后续费涨了点。我想再做个学习提醒，行吗？",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a32-2o",
+                  "text": "行，先小范围试一周",
+                  "type": "own",
+                  "after": "试下来，提醒让续费又涨了一截。"
+                },
+                {
+                  "id": "a32-2l",
+                  "text": "清单还剩三个，做完再说？",
+                  "type": "list",
+                  "after": "清单划掉三行，提醒一拖再拖。"
+                },
+                {
+                  "id": "a32-2s",
+                  "text": "先帮销售做完导出再说",
+                  "type": "loud",
+                  "after": "销售满意了，小李的提醒没了下文。"
+                }
+              ]
+            },
+            {
+              "id": "a32-3",
+              "speaker": "boss",
+              "line": "季度末了，这季度做成了什么？",
+              "timeLimit": 0,
+              "options": [
+                {
+                  "id": "a32-3l",
+                  "text": "清单上的 8 个都上线了。",
+                  "type": "list",
+                  "after": "老板：「那续费呢？」"
+                },
+                {
+                  "id": "a32-3o",
+                  "text": "讲续费变了多少，和为什么",
+                  "type": "own",
+                  "after": "老板：「下季度续费还交给你们。」",
+                  "betterSay": "讲清续费变了多少、为什么变"
+                },
+                {
+                  "id": "a32-3b",
+                  "text": "我们顶住了一大堆乱需求。",
+                  "type": "block",
+                  "after": "老板：「顶住之后，换来了什么？」"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "timerHint": "接下来会有人催你，× 秒内要回话",
+  "timerHintOff": "接下来会有人催你，这局不限时",
+  "actDone": "这一幕，对问题负责 × / × 次",
+  "calm": {
+    "factor": 1.5
+  },
+  "timeModeDefault": "std",
+  "timeLeftCue": {
+    "std": 10,
+    "calm": 15
+  },
+  "seenEndingsOn": "pass",
+  "replay": {
+    "variantRule": "alternate",
+    "shuffleOptions": true,
+    "shuffleFirstPlay": true
+  },
+  "scoring": {
+    "by": "minBar",
+    "max": 16,
+    "passAt": 13
+  },
+  "stars": {
+    "by": "minBar",
+    "max": 3,
+    "thresholds": {
+      "3": 16,
+      "2": 14,
+      "1": 13
+    },
+    "rules": {
+      "3": "两条里低的那条 16（全部对问题负责）",
+      "2": "低的那条 14 到 15",
+      "1": "低的那条 13；低于 13 没过",
+      "scoreFrom": "士气、结果都从 8 起，满 16。对问题负责两条各加 1，照单全收士气减 1，谁喊听谁士气减 1、结果加 1，硬挡回去士气加 1、结果减 1，没表态两条各减 1。按低的那条算"
+    }
+  },
+  "endings": {
+    "rule": "3 星是赋能团队；其余按选得最多的那种错法定，没表态算谁喊听谁；一样多时按最后选的那种",
+    "empowered": {
+      "name": "赋能团队",
+      "body": "功能没多做，用户却留住了。团队知道为什么而做。"
+    },
+    "factory": {
+      "name": "功能工厂",
+      "from": "list",
+      "body": "功能全上线了，用户还在走。大家很忙，却说不清为了什么。"
+    },
+    "firefight": {
+      "name": "救火队",
+      "from": "loud",
+      "body": "谁喊得响就先做谁的。团队一直在救火，问题一直在。"
+    },
+    "lone": {
+      "name": "一个人扛",
+      "from": "block",
+      "body": "需求挡下了不少，团队清静了，用户那头没变好。"
+    }
+  },
+  "fail": {
+    "body": "这季度没顶住，再来一次？",
+    "autoUnlockAfter": 3,
+    "autoUnlockBody": "先往下走，回头再来拿星"
+  },
+  "learned": {
+    "summary": "问「要解决什么问题」，而不是「要做什么功能」。",
+    "tomorrow": "明天：下次有人提功能，先问一句「做完了，怎么算成功？」",
+    "disclaimer": "数据为游戏模拟"
+  },
+  "bookSummary": {
+    "title": "本书要点",
+    "items": [
+      "先找对，再做对。",
+      "上线前排四颗雷。",
+      "能用纸试的，别用代码试。",
+      "问「解决什么问题」，而不是「做什么功能」。"
+    ],
+    "skip": "跳过",
+    "done": "看完了",
+    "entry": "本书要点"
+  },
+  "buttons": {
+    "start": "开始上班",
+    "next": "下一幕",
+    "continue": "继续",
+    "retry": "再来一次",
+    "backToMap": "回地图",
+    "replay": "重玩拿星"
+  },
+  "ui": {
+    "paused": "暂停",
+    "zeroDelta": "+0",
+    "unlocked": "已解锁",
+    "comeBack": "回来拿星",
+    "resumePrompt": "上次做到第 × 幕，接着做吗？",
+    "resumeContinue": "接着做",
+    "resumeRestart": "从头开始",
+    "learnedCollapsed": "这关学到了：对问题负责，不对清单负责",
+    "noteShowMs": 3000,
+    "timeMode": "回话时间",
+    "timeStd": "标准",
+    "timeCalm": "从容",
+    "timeOff": "不限时",
+    "timeSeconds": "× 秒",
+    "timeSr": "×，× 秒",
+    "timeOffSr": "用读屏建议选这个",
+    "timeNote": "三种都不影响星级",
+    "scoreRule": "8 句全对才 3 星，士气和结果按低的算。",
+    "changeTime": "改回话时间",
+    "timerHintAgain": "刚才没来得及回话？可以换个回话时间。",
+    "timeoutTip": "觉得赶？下一幕前可改不限时",
+    "actScoreLine": "现在按低的算：×",
+    "threeStarTip": "8 句全对才是 3 星",
+    "actLabel": "第 × / × 幕",
+    "untimed": "不限时",
+    "barValue": "× × / ×",
+    "barDelta": "× ×",
+    "betterSay": "更好的说法：×",
+    "srSays": "×说：",
+    "srTimed": "×，还有 × 秒",
+    "srTimeLeft": "还剩 × 秒",
+    "statsLine": "士气 ×，结果 ×，按低的算",
+    "endingLabel": "结局：×",
+    "endingsLeft": "还有 × 种结局没见过",
+    "endingsAll": "四种结局都见过了",
+    "failEndingLabel": "走向：×",
+    "resume": "继续",
+    "pausedNote": "已暂停",
+    "resetFailed": "旧记录没清掉，下次还会问一遍",
+    "pausedStartSay": "已暂停，还剩 × 秒，按继续后开始计时"
+  }
+}

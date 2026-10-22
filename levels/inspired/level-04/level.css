@@ -1,0 +1,1127 @@
+.l14,
+.l14 * {
+  box-sizing: border-box;
+}
+
+.l14 {
+  position: fixed;
+  z-index: 20;
+  top: calc(64px + env(safe-area-inset-top));
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: min(480px, 100%);
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: #1F2433;
+  font-family: inherit;
+  font-weight: 400;
+  background: #F3F6FB url("../level-01/assets/l11-bg.svg") center top / cover no-repeat;
+}
+
+.l14[data-screen="intro"] {
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.l14-intro-boss {
+  display: block;
+  width: 6rem;
+  height: 6rem;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.l14-intro-title {
+  margin: 0;
+  text-align: center;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.l14-reset-failed {
+  margin: 0;
+  text-align: center;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+}
+
+.l14-bubble {
+  position: relative;
+  box-sizing: border-box;
+  width: calc(15.5em + 4px);
+  max-width: 100%;
+  margin: 0 0 8px;
+  padding: 0.625em 0.75em;
+  border-radius: 0.875em;
+  border: 2px solid #FF8A3D;
+  background: #FFF4E8;
+  box-shadow: 0 4px 0 0 #D9DFEA;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+  text-wrap: pretty;
+  line-break: strict;
+}
+
+.l14-bubble::before,
+.l14-bubble::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.l14-bubble::before {
+  left: 14px;
+  bottom: 100%;
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent #FF8A3D transparent;
+}
+
+.l14-bubble::after {
+  left: 16px;
+  bottom: calc(100% - 2px);
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent #FFF4E8 transparent;
+}
+
+/* Intro narration only. Dialogue bubbles keep the tail above. */
+.l14[data-screen="intro"] > .l14-bubble::before,
+.l14[data-screen="intro"] > .l14-bubble::after {
+  content: none;
+  display: none;
+}
+
+.l14-timemode {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.l14-time-label {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+}
+
+.l14-time-group {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+.l14-time-opt {
+  appearance: none;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 3.5rem;
+  margin: 0;
+  padding: 0.125rem 0.25rem;
+  border: 2px solid #D9DFEA;
+  border-radius: 12px;
+  background: #fff;
+  color: #1F2433;
+  box-shadow: 0 4px 0 0 #D9DFEA;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.l14-time-opt[aria-checked="true"] {
+  border-color: #2F3E9E;
+  box-shadow: 0 4px 0 0 #22268A;
+}
+
+.l14-time-name,
+.l14-time-sec {
+  display: block;
+  max-width: 100%;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.l14-time-note {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 300;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #5B6275;
+}
+
+.l14-score-note {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.l14-start,
+.l14-next {
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: #2F3E9E;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  cursor: pointer;
+  box-shadow: 0 4px 0 0 #22268A;
+}
+
+/* Available height = viewport - 64 (top offset of .l14). Hide the boss when available < 460.
+   Settle rules below are scoped to this same query so 360x740 / 390x844 stay on the base sizes. */
+@media (max-height: 523.98px) {
+  .l14-intro-boss {
+    display: none;
+  }
+
+  .l14[data-screen="intro"] .l14-bubble::before,
+  .l14[data-screen="intro"] .l14-bubble::after {
+    display: none;
+  }
+
+  /* 320x480 settle. .l14 is top:64px, so the level box is 416px. Probe:
+     .l14-sheet starts about 168 tall (320x168 at y=108; header 44, foot ~204).
+     The host storage banner is ~52px and sits inside that top 64px; it does
+     not shrink .l14. Default stack is ~307px: art 96, name 27 (1.125rem*1.5),
+     body 48 (two lines), stars 24, stats 24, last 24, gaps 8*5, padding 12*2.
+     Ending cell is 3/4 of 144x96 = 108x72. Stars, stats, result-last, buttons
+     and the learned chip stay at the previous small-screen sizes. New stack
+     with a two-line body: art 72 + name 17.5 (0.875rem/1.25) + body 32.5
+     (0.8125rem = 13px, line-height 1.25; four endings are two nowrap lines,
+     longest line 15 glyphs)
+     + stars 16 + stats 15 + last 15 + gaps 2*5 + padding 2*2 = 182. That is
+     about 14px over the 168 sheet while learned is open. Do not shrink stars,
+     scores or buttons to close the gap. Learned title is 18 chars: at 0.75rem
+     it is one line (~28px vs ~68), and the foot padding/gap drop ~10px, so
+     once learned collapses the sheet grows ~50px (available ~218). 182 then
+     fits that grown sheet by ~36px. Buttons stay min-height 48. */
+  .l14[data-screen="settle"] .l14-sheet {
+    gap: 2px;
+    padding: 2px 8px;
+  }
+
+  .l14[data-screen="settle"] .l14-sheet > * {
+    flex-shrink: 0;
+  }
+
+  .l14[data-screen="settle"] .l14-ending-art {
+    width: 108px;
+    height: 72px;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .l14[data-screen="settle"] .l14-ending-art[data-ending="empowered"] .l14-ending-img {
+    width: 108px;
+    height: 72px;
+  }
+
+  /* 54:72 sheet fills the 72px cell; width stays the ratio (54px). */
+  .l14[data-screen="settle"] .l14-ending-art[data-ending="factory"] .l14-ending-img {
+    width: auto;
+    height: 72px;
+    max-width: 108px;
+  }
+
+  /* endingArt() writes the 96px badge size inline. 3/4 is 72; icon is 3/4 of 64. */
+  .l14[data-screen="settle"] .l14-ending-badge {
+    width: 72px !important;
+    height: 72px !important;
+  }
+
+  .l14[data-screen="settle"] .l14-ending-badge img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .l14[data-screen="settle"] .l14-ending-name {
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+
+  .l14[data-screen="settle"] .l14-ending-body {
+    font-size: 0.8125rem;
+    line-height: 1.25;
+  }
+
+  .l14[data-screen="settle"] .l14-stats,
+  .l14[data-screen="settle"] .l14-result-last {
+    font-size: 0.75rem;
+    line-height: 1.25;
+  }
+
+  .l14[data-screen="settle"] .l14-stars img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .l14[data-screen="settle"] .l14-foot {
+    gap: 6px;
+    padding: 4px 16px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .l14[data-screen="settle"] .l14-learned {
+    font-size: 0.75rem;
+    line-height: 1.35;
+    padding: 4px 8px;
+    gap: 2px;
+  }
+}
+
+.l14[data-screen="node"] {
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.l14-top {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 8px;
+}
+
+.l14-back {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 0 #D9DFEA;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.l14-back img {
+  width: 24px;
+  height: 24px;
+}
+
+.l14-act {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  text-align: center;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+}
+
+.l14-balance {
+  flex: none;
+  width: 44px;
+  height: 44px;
+}
+
+.l14-bars {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.l14-meter {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 48px;
+}
+
+.l14-meter img {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+  object-fit: contain;
+}
+
+@media (min-width: 360px) {
+  .l14-meter img {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.l14-track {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 8px;
+  border-radius: 999px;
+  background: #D9DFEA;
+  overflow: hidden;
+}
+
+.l14-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: #4C5FD5;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s;
+}
+
+.l14-bar-num {
+  flex: none;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.4286;
+  color: #1F2433;
+  white-space: nowrap;
+}
+
+.l14-talk {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 16px;
+}
+
+.l14-talk-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 128px;
+}
+
+.l14-who {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+}
+
+.l14-avatar {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  object-fit: contain;
+}
+
+.l14-name {
+  min-width: 0;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.4286;
+  color: #1F2433;
+}
+
+.l14-talk .l14-bubble {
+  margin: 0;
+}
+
+.l14-time {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding: 0 16px;
+  min-width: 0;
+  overflow: visible;
+}
+
+.l14-timer {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+}
+
+.l14-timer-track {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 8px;
+  border-radius: 999px;
+  background: #D9DFEA;
+  overflow: hidden;
+}
+
+.l14-timer-track > i {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: #E5701E;
+}
+
+.l14-timer-num,
+.l14-wait,
+.l14-untimed {
+  flex: none;
+  min-width: 0;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.1429;
+  color: #1F2433;
+  white-space: nowrap;
+}
+
+.l14-timer-pause {
+  display: none;
+}
+
+.l14-pause {
+  position: relative;
+  flex: none;
+  margin: 0;
+  padding: 0 0.5rem;
+  border: 1.5px solid #2F3E9E;
+  border-radius: 10px;
+  background: transparent;
+  color: #2F3E9E;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+}
+
+.l14[data-paused="true"] .l14-pause {
+  background: #2F3E9E;
+  border: none;
+  color: #FFFFFF;
+}
+
+.l14[data-paused="true"] .l14-timer-track > i {
+  background: #9AA1B2;
+}
+
+.l14[data-paused="true"] .l14-wait {
+  width: 7em;
+  min-width: 7em;
+  max-width: 7em;
+}
+
+/* Padding box is 18.1875px tall. -12px top/bottom is 42.1875; -13px is 44.1875. */
+.l14-pause::after {
+  content: "";
+  position: absolute;
+  inset: -13px -2px;
+}
+
+.l14-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.l14-choices {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px 16px calc(6px + env(safe-area-inset-bottom));
+}
+
+.l14-option {
+  appearance: none;
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #D9DFEA;
+  border-radius: 12px;
+  background: #fff;
+  color: #1F2433;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 4px 0 0 #D9DFEA;
+}
+
+.l14-option.is-locked {
+  background: #D9DFEA;
+  color: #5B6275;
+  box-shadow: none;
+  cursor: default;
+}
+
+.l14-option.is-picked {
+  border: 2px solid #2F3E9E;
+  background: #fff;
+  color: #1F2433;
+  box-shadow: 0 4px 0 0 #D9DFEA;
+  cursor: default;
+}
+
+.l14-option.is-hidden {
+  visibility: hidden;
+}
+
+.l14-stance {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 6px;
+  bottom: calc(6px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  color: #1F2433;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+.l14-dialog {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 16px;
+  left: 16px;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+  border-radius: 16px;
+  border-left: 4px solid #5B6275;
+  background: #FFFFFF;
+  box-shadow: 0 4px 0 #D9DFEA;
+  color: #1F2433;
+}
+
+.l14-tagline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  color: #1F2433;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.l14-badge {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.l14-badge img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.l14-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 20px;
+  height: 20px;
+}
+
+.l14-dots i {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: #1F2433;
+}
+
+.l14-dialog p {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+}
+
+.l14-dialog p.l14-timeout-tip {
+  font-weight: 300;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #5B6275;
+}
+
+.l14-float {
+  position: absolute;
+  left: 1.75rem;
+  top: 0;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #1F2433;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.1429;
+  pointer-events: none;
+  animation: l14-rise 0.9s linear forwards;
+}
+
+.l14-arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  flex: none;
+}
+
+.l14-arrow.is-up {
+  border-width: 0 4px 6px 4px;
+  border-color: transparent transparent #138A55 transparent;
+}
+
+.l14-arrow.is-down {
+  border-width: 6px 4px 0 4px;
+  border-color: #C2410C transparent transparent transparent;
+}
+
+@keyframes l14-rise {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .l14-fill {
+    transition: none;
+  }
+
+  .l14-float {
+    display: none;
+    animation: none;
+  }
+}
+
+.l14-back:focus-visible,
+.l14-pause:focus-visible,
+.l14-option:focus-visible,
+.l14-time-opt:focus-visible,
+.l14-next:focus-visible,
+.l14-start:focus-visible,
+.l14-secondary:focus-visible,
+.l14-learned:focus-visible {
+  outline: 2px solid #2F3E9E;
+  outline-offset: 2px;
+}
+
+.l14-hold {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.l14[data-screen="actSummary"],
+.l14[data-screen="hint"],
+.l14[data-screen="settle"],
+.l14[data-screen="resume"] {
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.l14-mask {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  z-index: 9;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  background: rgba(31, 36, 51, 0.45);
+}
+
+.l14-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  padding: 16px;
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 8px 0 #D9DFEA;
+}
+
+.l14-panel p {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+}
+
+.l14-spacer {
+  flex: 1;
+  min-width: 0;
+}
+
+.l14-sheet {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.l14-foot {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 16px calc(12px + env(safe-area-inset-bottom));
+}
+
+.l14-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.l14-act-done,
+.l14-ending-name {
+  margin: 0;
+  text-align: center;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: #1F2433;
+}
+
+.l14-act-score,
+.l14-hint-line,
+.l14-ending-body,
+.l14-stats {
+  margin: 0;
+  text-align: center;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+}
+
+/* All four endings. Each span is one centered line and must not wrap again.
+   Longest line is 15 fullwidth glyphs. 15 fit at 13px on 320 and at 16px from 360 up. */
+.l14-ending-line {
+  display: block;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.l14-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.l14-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 2px;
+  align-items: center;
+  min-height: 48px;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.l14-sum-mark {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.l14-sum-mark img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.l14-sum-mark .l14-dots {
+  width: 16px;
+  height: 16px;
+  gap: 2px;
+}
+
+.l14-sum-mark .l14-dots i {
+  width: 3px;
+  height: 3px;
+}
+
+.l14-row-choice,
+.l14-row-meta {
+  margin: 0;
+  min-width: 0;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+  text-wrap: pretty;
+  line-break: strict;
+}
+
+.l14-row-choice {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.l14-row-meta {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.l14-secondary {
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 2px solid #D9DFEA;
+  border-radius: 999px;
+  background: #fff;
+  color: #1F2433;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  cursor: pointer;
+  box-shadow: 0 4px 0 0 #D9DFEA;
+}
+
+.l14-ending-art {
+  width: 144px;
+  height: 96px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.l14-ending-art img {
+  display: block;
+  object-fit: contain;
+}
+
+.l14-ending-art[data-ending="empowered"] .l14-ending-img {
+  width: 144px;
+  height: 96px;
+}
+
+.l14-ending-art[data-ending="factory"] .l14-ending-img {
+  width: auto;
+  height: 96px;
+  max-width: 144px;
+}
+
+.l14-ending-badge {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.l14-ending-badge img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.l14-stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l14-stars img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.l14-result-last {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+  text-align: center;
+}
+
+.l14-result-last:empty {
+  margin: 0;
+  min-height: 0;
+  line-height: 0;
+}
+
+.l14-auto-unlock {
+  margin: 0;
+  text-align: center;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+}
+
+.l14-learned {
+  width: 100%;
+  margin: 0;
+  padding: 8px 12px;
+  border: 2px solid #D9DFEA;
+  border-radius: 12px;
+  background: #fff;
+  color: #1F2433;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 4px 0 0 #D9DFEA;
+}
+
+.l14-tap {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.88);
+  text-align: center;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1F2433;
+}
+
+.l14-tap img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.l14[data-tap="open"] .l14-option {
+  pointer-events: none;
+}
+
+.l14 .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

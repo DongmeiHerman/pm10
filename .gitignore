@@ -3,3 +3,4 @@ fonts-src/*.otf
 levels/inspired/level-03/data.v1.bak.json
 levels/inspired/level-03/data.v2.bak.json
 evidence/
+tools/__pycache__/

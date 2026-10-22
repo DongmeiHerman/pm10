@@ -162,6 +162,96 @@ export function clearLevelRun(b, l){
   writeJsonMap(L12_RUN_KEY, map);
 }
 
+// Checked clears. Real storage must read back clear. A failed write, or a
+// resume / run that is still there, throws. No real storage: clear memory
+// and do not throw. clearResume / clearLevelRun above stay as they are.
+const CLEAR_RESUME_CHECKED_FAILED = 'pm10 clearResumeChecked failed';
+const CLEAR_LEVEL_RUN_CHECKED_FAILED = 'pm10 clearLevelRunChecked failed';
+
+function resumeStillThere(key){
+  let raw;
+  try{ raw = store.getItem(PROGRESS_KEY); }
+  catch{ return true; }
+  if(raw == null || raw === '') return false;
+  let data;
+  try{ data = JSON.parse(raw); }
+  catch{ return true; }
+  if(!data || data.version !== 1 || !data.levels || typeof data.levels !== 'object') return false;
+  const rec = data.levels[key];
+  if(!rec || !rec.resume || rec.resume.screen == null) return false;
+  const ts = rec.resume.ts;
+  if(typeof ts === 'number' && Date.now() - ts > WEEK_MS) return false;
+  return true;
+}
+
+function levelRunStillThere(key){
+  let raw;
+  try{ raw = store.getItem(L12_RUN_KEY); }
+  catch{ return true; }
+  if(raw == null || raw === '') return false;
+  let data;
+  try{ data = JSON.parse(raw); }
+  catch{ return true; }
+  if(!data || typeof data !== 'object' || Array.isArray(data)) return true;
+  return data[key] != null;
+}
+
+export function clearResumeChecked(b, l){
+  if(!store){
+    clearResume(b, l);
+    return;
+  }
+  const key = levelKey(b, l);
+  const p = loadProgress();
+  const rec = p.levels[key];
+  if(rec && rec.resume){
+    rec.resume = null;
+    let text;
+    try{ text = JSON.stringify(p); }
+    catch{ throw new Error(CLEAR_RESUME_CHECKED_FAILED); }
+    try{ store.setItem(PROGRESS_KEY, text); }
+    catch{
+      mem[PROGRESS_KEY] = text;
+      throw new Error(CLEAR_RESUME_CHECKED_FAILED);
+    }
+  }
+  if(resumeStillThere(key)) throw new Error(CLEAR_RESUME_CHECKED_FAILED);
+}
+
+export function clearLevelRunChecked(b, l){
+  if(!store){
+    clearLevelRun(b, l);
+    return;
+  }
+  const key = levelKey(b, l);
+  let raw;
+  try{ raw = store.getItem(L12_RUN_KEY); }
+  catch{ throw new Error(CLEAR_LEVEL_RUN_CHECKED_FAILED); }
+  let map;
+  if(raw == null || raw === '') map = {};
+  else{
+    let data;
+    try{ data = JSON.parse(raw); }
+    catch{ throw new Error(CLEAR_LEVEL_RUN_CHECKED_FAILED); }
+    if(!data || typeof data !== 'object' || Array.isArray(data)){
+      throw new Error(CLEAR_LEVEL_RUN_CHECKED_FAILED);
+    }
+    map = data;
+  }
+  if(map[key] != null){
+    delete map[key];
+    let text;
+    try{ text = JSON.stringify(map); }
+    catch{ throw new Error(CLEAR_LEVEL_RUN_CHECKED_FAILED); }
+    try{ store.setItem(L12_RUN_KEY, text); }
+    catch{
+      mem[L12_RUN_KEY] = text;
+      throw new Error(CLEAR_LEVEL_RUN_CHECKED_FAILED);
+    }
+  }
+  if(levelRunStillThere(key)) throw new Error(CLEAR_LEVEL_RUN_CHECKED_FAILED);
+}
+
 // 连续没过达到上限：不写 done，不当作通关。已通关的记录原样返回。已有星只升不降。
 // 没过关也记下这一次的分数和星。星只升不降。不写 done。
 export function rememberScore(b, l, stars, score){
@@ -225,4 +315,47 @@ export function clearAllPm10(){
   try{ wipe(localStorage); }catch{ /* ignore */ }
   try{ wipe(sessionStorage); }catch{ /* ignore */ }
   for(const k of Object.keys(mem)) if(k.startsWith('pm10:')) delete mem[k];
+}
+
+// Seen endings, separate key. Bad JSON, non-objects and arrays read as an empty map.
+// One level entry: non-arrays become []; non-empty strings only; first-seen order; keep the latest 16.
+// The four ending ids are filtered again in the level pure function. Do not import levels/.
+export const ENDINGS_KEY = 'pm10:endings:v1';
+const SEEN_LIMIT = 16;
+
+function cleanSeenList(value){
+  if(!Array.isArray(value)) return [];
+  const out = [];
+  const got = new Set();
+  for(let i = 0; i < value.length; i++){
+    const item = value[i];
+    if(typeof item !== 'string' || item === '' || got.has(item)) continue;
+    got.add(item);
+    out.push(item);
+  }
+  // First-seen order. Past 16, drop the front and keep the latest 16. Read and write share this.
+  if(out.length <= SEEN_LIMIT) return out;
+  return out.slice(out.length - SEEN_LIMIT);
+}
+
+function sameSeen(a, b){
+  if(a.length !== b.length) return false;
+  for(let i = 0; i < a.length; i++) if(a[i] !== b[i]) return false;
+  return true;
+}
+
+export function readSeenEndings(b, l){
+  return cleanSeenList(readJsonMap(ENDINGS_KEY)[levelKey(b, l)]);
+}
+
+export function addSeenEnding(b, l, ending){
+  const map = readJsonMap(ENDINGS_KEY);
+  const key = levelKey(b, l);
+  const prev = cleanSeenList(map[key]);
+  const extra = typeof ending === 'string' && ending !== '' ? [ending] : [];
+  const next = cleanSeenList(prev.concat(extra));
+  if(sameSeen(prev, next)) return next;
+  map[key] = next;
+  writeJsonMap(ENDINGS_KEY, map);
+  return next.slice();
 }

@@ -141,15 +141,30 @@ export function createCountdown({ durationMs, onTick, onEnd, pauseOnHidden, onHi
 
 export function timerBarHTML({
   remainingSec,
-  paused,
+  paused = false,
   pausedLabel,
   totalSec,
-  className = 'hud-timer'
+  className = 'hud-timer',
+  waitLabel
 }) {
   const total = Math.max(1, Number(totalSec) || 1);
   const sec = Math.max(0, Number(remainingSec) || 0);
   const pct = Math.max(0, Math.min(100, sec / total * 100));
   const flag = paused ? 'true' : 'false';
+  // waitLabel is optional. Callers pass already-escaped text, same as pausedLabel.
+  // Omitting it keeps the markup below byte-for-byte the same.
+  if (waitLabel !== undefined) {
+    if (paused && (pausedLabel === undefined || pausedLabel === null || pausedLabel === '')) {
+      throw new TypeError('timerBarHTML requires pausedLabel when paused is true and waitLabel is set');
+    }
+    const note = paused ? pausedLabel : waitLabel;
+    const pausedClass = paused ? ` ${className}--paused` : '';
+    return `<div class="${className}${pausedClass}" data-testid="timer-bar" data-remaining="${sec}" data-paused="${flag}" role="timer">
+    <div class="${className}-track" aria-hidden="true"><i style="width:${pct}%"></i></div>
+    <span class="${className}-num" data-testid="timer-seconds">${sec}</span>
+    <span class="${className}-note" data-testid="timer-note">${note}</span>
+  </div>`;
+  }
   const hidden = paused ? '' : ' hidden';
   return `<div class="${className}" data-testid="timer-bar" data-remaining="${sec}" data-paused="${flag}" role="timer">
     <div class="${className}-track" aria-hidden="true"><i style="width:${pct}%"></i></div>
