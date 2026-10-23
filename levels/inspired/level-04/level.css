@@ -281,7 +281,8 @@
   }
 
   .l14[data-screen="settle"] .l14-stats,
-  .l14[data-screen="settle"] .l14-result-last {
+  .l14[data-screen="settle"] .l14-result-last,
+  .l14[data-screen="settle"] .save-fail-note {
     font-size: 0.75rem;
     line-height: 1.25;
   }

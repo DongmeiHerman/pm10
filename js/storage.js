@@ -1,3 +1,4 @@
+import { noteProgressWriteFailed } from './save-fail.js';
 import { testHookOn } from './test-hook.js';
 // 进度存储：总键 pm10:progress:v1，内部按 "<book-id>/<level-id>" 记录每关；存储不可用时退回内存
 export const PROGRESS_KEY = 'pm10:progress:v1';
@@ -46,7 +47,20 @@ export function loadProgress(){
   if(expireResumes(p) && !hookSkipsExpireWrite()) saveProgress(p);
   return p;
 }
-export function saveProgress(p){const s=JSON.stringify(p);try{store?store.setItem(PROGRESS_KEY,s):(mem[PROGRESS_KEY]=s);}catch{mem[PROGRESS_KEY]=s;}}
+// Progress key missed the store: keep the text in memory and flag the miss. Do not throw or log.
+function writeProgress(text){
+  if(!store){
+    mem[PROGRESS_KEY] = text;
+    noteProgressWriteFailed();
+    return;
+  }
+  try{ store.setItem(PROGRESS_KEY, text); }
+  catch{
+    mem[PROGRESS_KEY] = text;
+    noteProgressWriteFailed();
+  }
+}
+export function saveProgress(p){ writeProgress(JSON.stringify(p)); }
 export function isDone(p, b, l){ return !!p.levels[levelKey(b,l)]?.done; }
 
 function clampStars(n){
@@ -212,6 +226,7 @@ export function clearResumeChecked(b, l){
     try{ store.setItem(PROGRESS_KEY, text); }
     catch{
       mem[PROGRESS_KEY] = text;
+      noteProgressWriteFailed();
       throw new Error(CLEAR_RESUME_CHECKED_FAILED);
     }
   }

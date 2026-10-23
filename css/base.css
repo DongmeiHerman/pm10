@@ -59,3 +59,4 @@ transition:opacity .2s ease,transform .2s ease}
 .about .btn.secondary{background:#fff;color:var(--fg);border:2px solid #d9dfea}
 @media (prefers-reduced-motion:reduce){
 .toast{transition:none}}
+.save-fail-note{margin:0;min-width:0;max-width:100%;text-align:center;font-size:1rem;line-height:1.45;font-weight:400;overflow-wrap:anywhere}

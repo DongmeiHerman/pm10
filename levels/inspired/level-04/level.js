@@ -1,6 +1,7 @@
 import { readFailStreak, readLevelRun, readResume, readSeenEndings } from '../../../js/storage.js';
 import { testHookOn } from '../../../js/test-hook.js';
 import { createCountdown, timerBarHTML } from '../../../js/timer-bar.js';
+import { insertSaveFailNote, resetSaveFailure } from '../../../js/save-fail.js';
 import { STARS_SR, uiText } from '../../../js/ui-text.js';
 import { ENDING_IDS } from './logic/data-check.js';
 import { resultLines } from './logic/result.js';
@@ -1934,6 +1935,7 @@ export function mount(root, meta, api) {
       });
       // 这一局已经结束。没过的动作表不清中途记录，这里两种结局都清。
       // A failed clear still finishes the plan and the settle screen, then rethrows.
+      resetSaveFailure();
       try { saver.clearResume(bookId, levelId); } catch (err) { faults.push(err); }
       try { saver.clearLevelRun(bookId, levelId); } catch (err) { faults.push(err); }
       saver.applyPlan(bookId, levelId, plan, api);
@@ -1990,7 +1992,9 @@ export function mount(root, meta, api) {
     last.setAttribute('data-slot', 'result-last');
     last.textContent = lines.last;
 
-    sheet.append(title, body, paintStars(state.stars), stats, last);
+    const stars = paintStars(state.stars);
+    sheet.append(title, body, stars, stats, last);
+    insertSaveFailNote(stars);
 
     const foot = document.createElement('div');
     foot.className = 'l14-foot';

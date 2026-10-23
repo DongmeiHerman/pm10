@@ -489,7 +489,7 @@ export function mount(root, meta, api) {
     stopCountdown();
     pauseReasons.clear();
     if (!committed) {
-      committed = true;
+      committed = true; resetSaveFailure();
       if (!seq) {
         try { clearResume(bookId, levelId); } catch { /* ignore */ }
         try { clearLevelRun(bookId, levelId); } catch { /* ignore */ }
@@ -843,6 +843,7 @@ export function mount(root, meta, api) {
       ${overlay}
       ${judgeHTML()}
     </div>`;
+    if (phase === 'result') insertSaveFailNote(root.querySelector('[data-testid="stars"]'));
     afterDraw();
   }
 
@@ -916,3 +917,5 @@ export function mount(root, meta, api) {
   fresh(0, false);
   return unmount;
 }
+
+import { insertSaveFailNote, resetSaveFailure } from '../../../js/save-fail.js';

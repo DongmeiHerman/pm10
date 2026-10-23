@@ -629,7 +629,7 @@ export async function mount(root, meta, api) {
       root.querySelectorAll('[data-act="card"]').forEach(attachDrag);
     }
     if (screen === 3) playSettle(round1 ? round1.stars : 1, () => enter(4));
-    if (screen === 6) playCeremony(round2 ? round2.stars : 1);
+    if (screen === 6) playCeremony(round2 ? round2.stars : 1); if (screen === 7) insertSaveFailNote(root.querySelector('[data-testid="stars"]'));
   }
 
   function attachDrag(btn) {
@@ -713,9 +713,9 @@ export async function mount(root, meta, api) {
     if (n === 2) playing = 1;
     if (n === 5) playing = 2;
     // 进度只在结果屏仍然挂载时写入。仪式中返回不得记 done/stars。
-    if (n === 7 && round2 && api && api.complete) {
+    if (n === 7 && round2) { resetSaveFailure(); if (api && api.complete) {
       try { api.complete({ stars: round2.stars, score: round2.stars, stay: true }); } catch { /* ignore */ }
-    }
+    } }
     if (disposed) return;
     resetTimer(n);
     remember(n);
@@ -826,3 +826,5 @@ export async function mount(root, meta, api) {
   fresh();
   return unmount;
 }
+
+import { insertSaveFailNote, resetSaveFailure } from '../../../js/save-fail.js';

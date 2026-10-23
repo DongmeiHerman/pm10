@@ -1219,7 +1219,7 @@ export function mount(root, meta, api) {
     testing = null;
     teamHold = false;
     if (!committed) {
-      committed = true;
+      committed = true; resetSaveFailure();
       if (hookOn()) {
         failAuto = false;
       } else {
@@ -1998,6 +1998,7 @@ export function mount(root, meta, api) {
       ${lagHTML()}
       ${toast}
     </div>`;
+    if (phase === 'result') insertSaveFailNote(root.querySelector('[data-testid="stars"]'));
     drawing = false;
     announceNewCard();
     afterDraw();
@@ -2188,3 +2189,5 @@ export function mount(root, meta, api) {
   fresh(0, false);
   return unmount;
 }
+
+import { insertSaveFailNote, resetSaveFailure } from '../../../js/save-fail.js';
