@@ -504,10 +504,7 @@ export function mount(root, meta, api) {
       onTick: onClockTick,
       onEnd: onClockEnd
     });
-    if (hold === true && beginHeld(state)) {
-      if (hiddenNow()) applyHiddenPause();
-      return true;
-    }
+    if (hold === true && beginHeld(state)) return true;
     // Not the opening hold. Drop the dialog reason and do not leave wait.
     releaseResumeOffer();
     pauseState = null;
@@ -768,7 +765,6 @@ export function mount(root, meta, api) {
     row.replaceChildren();
     noteHeldAct(state);
     if (state.limitMs == null) {
-      releaseResumeOffer();
       const span = document.createElement('span');
       span.className = 'l14-untimed';
       span.setAttribute('data-testid', 'untimed');
@@ -1459,9 +1455,8 @@ export function mount(root, meta, api) {
 
   function restartResume() {
     if (disposed || !resumeOpen) return;
-    // Drop the dialog reason before the intro is painted. Do not leave wait.
+    // keepResumeOffer stays false so the later clear does not put resume-offer back.
     keepResumeOffer = false;
-    setPause('resume-offer', false);
     // Each new attempt can show and speak the line again. Repaint does not come through here.
     resetFailedDone = false;
     const faults = [];

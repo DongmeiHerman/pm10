@@ -6,7 +6,7 @@ const app = document.getElementById('app');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 const BOOK_COLORS = ['#4C5FD5', '#7A5AF8', '#2BA6DE', '#14B8A6', '#3FAE5A', '#E5A100', '#F47B2A', '#E5484D', '#D6409F', '#5E6AD2'];
-const WARN_TEXT = '进度只存在本机，清除浏览器缓存或换手机都会丢失进度';
+const WARN_TEXT = '进度只存本机，清缓存或换手机会丢';
 
 let toastTimer = 0;
 let aboutClearTimer = 0;
