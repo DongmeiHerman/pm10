@@ -33,7 +33,7 @@ function expireResumes(p){
   return changed;
 }
 
-const TEST_HOOK_FLAGS = ['l12test', 'l13test', 'l14test'];
+const TEST_HOOK_FLAGS = ['l12test', 'l13test', 'l14test', 'l05test'];
 function hookSkipsExpireWrite(){
   try{
     if(typeof location === 'undefined' || !location) return false;

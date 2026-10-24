@@ -11,7 +11,7 @@
         { "id": "level-02", "title": "需求单排雷" },
         { "id": "level-03", "title": "原型抢测" },
         { "id": "level-04", "title": "老板的需求清单" },
-        { "id": "level-05", "title": "指标拔河", "status": "wip" },
+        { "id": "level-05", "title": "指标拔河" },
         { "id": "level-06", "title": "产品经理的四块拼图", "status": "wip" }
       ]
     },

@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "id": "level-05",
+  "book": "inspired",
+  "title": "指标拔河",
+  "teaches": "看结果，不看产出：上线多少个功能不算成绩",
+  "duration": "3 分钟",
+  "batch": "second",
+  "intro": {
+    "title": "指标拔河",
+    "body": "季度目标会上，大家写了一堆目标贴纸。你只能挑 3 张贴到墙上，下季度全组就照这 3 张干。",
+    "button": "去贴目标"
+  },
+  "wallSlots": 3,
+  "weights": [
+    3,
+    2,
+    1
+  ],
+  "stickers": [
+    {
+      "id": "o1",
+      "text": "上线8个新功能",
+      "kind": "output",
+      "masterText": "上线 8 个新功能"
+    },
+    {
+      "id": "r1",
+      "text": "新用户下月还在用",
+      "kind": "result",
+      "masterText": "新用户次月留存提高"
+    },
+    {
+      "id": "o2",
+      "text": "完成首页改版",
+      "kind": "output",
+      "masterText": "完成首页改版"
+    },
+    {
+      "id": "r2",
+      "text": "客服投诉量下降",
+      "kind": "result",
+      "masterText": "客服投诉量下降"
+    },
+    {
+      "id": "o3",
+      "text": "写完20份需求文档",
+      "kind": "output",
+      "masterText": "写完 20 份需求文档"
+    },
+    {
+      "id": "r3",
+      "text": "下单到付款的流失减少",
+      "kind": "result",
+      "masterText": "下单到付款的流失减少"
+    },
+    {
+      "id": "o4",
+      "text": "每周开两次评审会",
+      "kind": "output",
+      "masterText": "每周开两次评审会"
+    },
+    {
+      "id": "r4",
+      "text": "付费用户续费变多",
+      "kind": "result",
+      "masterText": "付费用户续费变多"
+    }
+  ],
+  "replaySwap": {
+    "replaceCount": 2,
+    "keepBalance": true,
+    "rule": "重玩时从当前 8 张里各换掉 1 张产出、1 张结果；换入备选池里未在本局出现过的同类型贴纸各 1 张，保持墙上可选池仍是 4 产出 + 4 结果。",
+    "pool": [
+      {
+        "id": "o5",
+        "text": "开完十场分享会",
+        "kind": "output"
+      },
+      {
+        "id": "o6",
+        "text": "写完十份周报",
+        "kind": "output"
+      },
+      {
+        "id": "r5",
+        "text": "周活跃用户变多",
+        "kind": "result"
+      },
+      {
+        "id": "r6",
+        "text": "首单转化率提高",
+        "kind": "result"
+      }
+    ]
+  },
+  "bars": [
+    {
+      "id": "work",
+      "label": "团队做了多少事",
+      "short": "做事",
+      "formulaNote": "估算：每张贴纸贡献 weight × (产出?14:2)"
+    },
+    {
+      "id": "biz",
+      "label": "业务变了多少",
+      "short": "业务",
+      "formulaNote": "估算：每张贴纸贡献 weight × (结果?14:2)"
+    }
+  ],
+  "barFormula": {
+    "outputToWork": 14,
+    "outputToBiz": 2,
+    "resultToBiz": 14,
+    "resultToWork": 2,
+    "maxRaw": 84,
+    "display": "heightPct = round(raw / 84 * 100)，柱旁写 raw 和高低，不只靠颜色"
+  },
+  "stars": {
+    "byResultCount": {
+      "3": 3,
+      "2": 2,
+      "1": 1,
+      "0": 1
+    },
+    "passAtLeast": 1,
+    "useLastPaste": true
+  },
+  "feedbacks": {
+    "onOutput": "这是做了什么，不是变了什么。",
+    "onResult": "这个能看出用户变没变。"
+  },
+  "comments": {
+    "3": "功能做得不多，但留下的用户多了。下季度继续这么定。",
+    "2": "方向大体对，有一张贴纸只是在数干了多少活。",
+    "1": "全组忙了一季度，柱子很高，可用户一点没变。"
+  },
+  "learn": {
+    "lines": [
+      "做了多少事不是成绩，用户和业务变了才是。",
+      "明天：把你这季度的目标改写一遍，每条都改成「什么变了」。"
+    ],
+    "footnote": "数据为游戏模拟"
+  },
+  "buttons": {
+    "goPaste": "去贴目标",
+    "startQuarter": "开干",
+    "repost": "换几张再试",
+    "keepSettle": "就这样结算",
+    "backMap": "回地图",
+    "replayStar": "重玩拿星",
+    "resumeYes": "接着做",
+    "resumeNo": "从头开始",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "moveOut": "移出",
+    "continue": "继续"
+  },
+  "ui": {
+    "scoreRule": "墙上 3 张，结果型越多星越多。",
+    "pasteHint": "点贴纸上墙。墙上可上移、下移、移出。排前面的对柱子影响更大；星级只看结果型张数。贴满 3 张再开干。",
+    "wallFull": "墙上已经 3 张，先移出一张再贴。",
+    "wallTitle": "目标墙",
+    "poolTitle": "贴纸池",
+    "slotEmpty": "空位",
+    "slotWeight": "第 {n} 张，对柱子影响 {w}",
+    "kindOutput": "产出",
+    "kindResult": "结果",
+    "barSimNote": "数据为游戏模拟",
+    "repostOnce": "还能改贴一次，改完以这次为准。",
+    "oneStarTip": "换几张贴纸，看看柱子怎么变。",
+    "saveFailNote": "这局没存上，可能是手机空间满了",
+    "resumePrompt": "上次做到{stage}，接着做吗？",
+    "stagePaste": "贴目标",
+    "stageRepost": "改贴",
+    "stageBars": "看柱子",
+    "stageComment": "听点评",
+    "noTimer": "本关无限时",
+    "reduceMotionBars": "这季度做完了。两根柱子对比如下。",
+    "srOutput": "产出型",
+    "srResult": "结果型",
+    "srWallSlot": "目标墙第 {n} 位，{text}，{kind}",
+    "srPoolItem": "{text}，{kind}，点一下贴上墙",
+    "srMoveUp": "上移",
+    "srMoveDown": "下移",
+    "srMoveOut": "移出目标墙",
+    "srStars": "{n} 星",
+    "autoUnlockTip": "先往下走，回头再来拿星",
+    "mapUnlocked": "已解锁",
+    "mapComeBack": "回来拿星",
+    "resetFailed": "旧记录没清掉，下次还会问一遍",
+    "startNeedFull": "还要贴满 3 张",
+    "startNeedMore": "还差 {n} 张",
+    "startReady": "可以开干了",
+    "srBarsSummary": "做事柱 {work}，业务柱 {biz}，{higher}更高"
+  }
+}
